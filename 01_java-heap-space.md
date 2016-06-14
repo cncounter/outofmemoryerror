@@ -32,15 +32,15 @@ There most common reason for the _java.lang.OutOfMemoryError: Java heap space_ e
 
 The first example is truly simple – the following Java code tries to allocate an array of 2M integers. When you compile it and launch with 12MB of Java heap space (_java -Xmx12m OOM_), it fails with the _java.lang.OutOfMemoryError: Java heap space_ message. With 13MB Java heap space the program runs just fine.
 
-```
-class OOM {
-  static final int SIZE=2*1024*1024;
-  public static void main(String[] a) {
-    int[] i = new int[SIZE];
-   }
-} 
 
-```
+	class OOM {
+	  static final int SIZE=2*1024*1024;
+	  public static void main(String[] a) {
+	    int[] i = new int[SIZE];
+	   }
+	} 
+
+
 
 ### Memory leak example
 
@@ -50,31 +50,32 @@ Java’s automatic memory management relies on [GC](https://plumbr.eu/java-garba
 
 It is fairly easy to construct a Java program that satisfies the definition of a memory leak:
 
-```
-class KeylessEntry {
 
-   static class Key {
-      Integer id;
 
-      Key(Integer id) {
-         this.id = id;
-      }
+	class KeylessEntry {
 
-      @Override
-      public int hashCode() {
-         return id.hashCode();
-      }
-   }
+	   static class Key {
+	      Integer id;
 
-   public static void main(String[] args) {
-      Map m = new HashMap();
-      while (true)
-         for (int i = 0; i < 10000; i++)
-            if (!m.containsKey(new Key(i)))
-               m.put(new Key(i), "Number:" + i);
-   }
-} 
-```
+	      Key(Integer id) {
+		 this.id = id;
+	      }
+
+	      @Override
+	      public int hashCode() {
+		 return id.hashCode();
+	      }
+	   }
+
+	   public static void main(String[] args) {
+	      Map m = new HashMap();
+	      while (true)
+		 for (int i = 0; i < 10000; i++)
+		    if (!m.containsKey(new Key(i)))
+		       m.put(new Key(i), "Number:" + i);
+	   }
+	} 
+
 
 When you execute the above code above you might expect it to run forever without any problems, assuming that the naive caching solution only expands the underlying Map to 10,000 elements, as beyond that all the keys will already be present in the HashMap. However, in reality the elements will keep being added as the Key class does not contain a proper _equals()_ implementation next to its _hashCode()_.
 
@@ -82,16 +83,16 @@ As a result, over time, with the leaking code constantly used, the “cached” 
 
 The solution would be easy – add the implementation for the _equals()_ method similar to the one below and you will be good to go. But before you manage to find the cause, you will definitely have lose some precious brain cells.
 
-```
-@Override
-public boolean equals(Object o) {
-   boolean response = false;
-   if (o instanceof Key) {
-      response = (((Key)o).id).equals(this.id);
-   }
-   return response;
-}
-```
+
+	@Override
+	public boolean equals(Object o) {
+	   boolean response = false;
+	   if (o instanceof Key) {
+	      response = (((Key)o).id).equals(this.id);
+	   }
+	   return response;
+	}
+
 
 
 ## What is the solution?
@@ -141,13 +142,14 @@ Equipped with this information you can zoom in to the underlying root cause and 
 
 However, when your conclusion from memory analysis or from reading the Plumbr report are that memory use is legal and there is nothing to change in the source code, you need to allow your JVM more Java heap space to run properly. In this case, alter your JVM launch configuration and add (or increase the value if present) the following:
 
-`-Xmx1024m`
+	-Xmx1024m
 
 The above configuration would give the application 1024MB of Java heap space. You can use g or G for GB, m or M for MB, k or K for KB. For example all of the following are equivalent to saying that the maximum Java heap space is 1GB:
 
-```
- java -Xmx1073741824 com.mycompany.MyClass
-    java -Xmx1048576k com.mycompany.MyClass
-    java -Xmx1024m com.mycompany.MyClass
-    java -Xmx1g com.mycompany.MyClass 
-```
+
+
+	java -Xmx1073741824 com.mycompany.MyClass
+	java -Xmx1048576k com.mycompany.MyClass
+	java -Xmx1024m com.mycompany.MyClass
+	java -Xmx1g com.mycompany.MyClass 
+
