@@ -6,7 +6,7 @@ Java applications are only allowed to use a limited amount of memory. This limit
 Java应用程序只能使用有限的内存。在应用程序启动期间指定这个极限.为了让事情更复杂,Java内存分为两个不同的地区。这些区域被称为堆空间和Permgen(永久代):
 
 
-![OutOfMemoryError: Java heap space](https://plumbr.eu/wp-content/uploads/2014/04/java-lang-outofmemoryerror-java-heap-space.png)
+![](01_01_java-heap-space.png)
 
 
 
