@@ -1,9 +1,10 @@
 # java.lang.OutOfMemoryError:
+
 **Java heap space**
 
 Java applications are only allowed to use a limited amount of memory. This limit is specified during application startup. To make things more complex, Java memory is separated into two different regions. These regions are called Heap space and Permgen (for Permanent Generation):
 
-Java应用程序只能使用有限的内存。在应用程序启动期间指定这个极限.为了让事情更复杂,Java内存分为两个不同的地区。这些区域被称为堆空间和Permgen(永久代):
+Java程序可以使用的内存是有限的。而且只能在程序启动时指定最大内存。更复杂的是, Java内存被分成两个区: 称为堆空间(Heap space)和 永久代(Permanent Generation, 简称 Permgen):
 
 
 ![](01_01_java-heap-space.png)
