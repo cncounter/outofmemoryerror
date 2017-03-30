@@ -13,17 +13,17 @@ Java程序可以使用的内存是有限的。而且只能在程序启动时指�
 
 The size of those regions is set during the Java Virtual Machine (JVM) launch and can be customized by specifying JVM parameters _-Xmx_ and _-XX:MaxPermSize_. If you do not explicitly set the sizes, platform-specific defaults will be used.
 
-这些地区的大小被设置在Java虚拟机(JVM)发射,可以定制通过指定JVM参数_-Xmx_ _-XX:MaxPermSize_.如果不显式地设置的大小,将使用特定于平台的违约。
+这些 region 的大小在 JVM 启动时设定, 使用的参数为 `-Xmx` 和 `-XX:MaxPermSize`. 如果不指定, 则根据运行环境自动配置。
 
 
 The _java.lang.OutOfMemoryError: Java heap space_ error will be triggered when the application **attempts to add more data into the heap space area, but there is not enough room for it**.
 
-_java.lang。OutOfMemoryError:Java堆space_错误时将触发应用程序* *试图将更多的数据添加到堆空间区域,但没有足够的房间* *。
+如果创建对象时堆内存不足, 就会产生 `java.lang.OutOfMemoryError: Java heap space` 错误。
 
 
 Note that there might be plenty of physical memory available, but the _java.lang.OutOfMemoryError: Java heap space_ error is thrown whenever the JVM reaches the heap size limit.
 
-请注意,可能会有大量可用的物理内存,但_java.lang。抛出OutOfMemoryError:Java堆space_错误当JVM堆大小限制。
+请注意, 机器上可能还有空闲的物理内存, 但 JVM 使用的内存达到 heap size  的限制, 也会抛出 `java.lang.OutOfMemoryError: Java heap space` 错误。
 
 
 ## What is causing it?
