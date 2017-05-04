@@ -2,9 +2,11 @@
 
 **Java heap space**
 
+## Java 堆内存
+
 Java applications are only allowed to use a limited amount of memory. This limit is specified during application startup. To make things more complex, Java memory is separated into two different regions. These regions are called Heap space and Permgen (for Permanent Generation):
 
-Java程序的可用内存是受限制的。最大内存限制在启动时就决定了。而且,Java内存区域被划分成两个部分: 堆空间(Heap space)和 永久代(Permanent Generation, 简称 Permgen):
+Java程序可以使用的内存是受限的。在JVM启动时由参数决定了最大内存限制。而JVM的内存区域分成两大块: 堆空间(Heap space)和 永久代(Permanent Generation, 简称 Permgen):
 
 
 ![](01_01_java-heap-space.png)
@@ -28,7 +30,7 @@ Note that there might be plenty of physical memory available, but the _java.lang
 
 ## What is causing it?
 
-## 是由什么原因导致的?
+## 问题原因
 
 
 There most common reason for the _java.lang.OutOfMemoryError: Java heap space_ error is simple – you try to fit an XXL application into an S-sized Java heap space. That is – the application just requires more Java heap space than available to it to operate normally. Other causes for this OutOfMemoryError message are more complex and are caused by a programming error:
