@@ -30,7 +30,7 @@ Note that there might be plenty of physical memory available, but the _java.lang
 
 ## What is causing it?
 
-## 问题原因
+## 问题的原因
 
 
 There most common reason for the _java.lang.OutOfMemoryError: Java heap space_ error is simple – you try to fit an XXL application into an S-sized Java heap space. That is – the application just requires more Java heap space than available to it to operate normally. Other causes for this OutOfMemoryError message are more complex and are caused by a programming error:
@@ -250,7 +250,7 @@ However, when your conclusion from memory analysis or from reading the Plumbr re
 
 The above configuration would give the application 1024MB of Java heap space. You can use g or G for GB, m or M for MB, k or K for KB. For example all of the following are equivalent to saying that the maximum Java heap space is 1GB:
 
-上面的配置将使应用程序1024 mb的Java堆空间。您可以使用g或g GB,m和m MB,k和k对KB.例如以下均相当于说Java堆的最大空间是1 gb:
+这里配置Java堆空间为 1024MB。可以使用 g/G 表示 GB, m/M 代表 MB, k/K 表示 KB. 所以下面的这些形式都是等价的, 设置Java堆的最大空间是 1GB:
 
 
 	java -Xmx1073741824 com.mycompany.MyClass
