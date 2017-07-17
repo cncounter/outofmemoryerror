@@ -4,27 +4,24 @@
 
 Java applications are only allowed to use a limited amount of memory. This limit is specified during application startup. To make things more complex, Java memory is separated into two different regions. These regions are called Heap space and Permgen (for Permanent Generation):
 
-Java程序的内存使用是受限制的, JVM启动时由参数决定了最大内存限制。JVM将程序内存分为两个部分: 堆内存(Heap space)和 永久代(Permanent Generation, 简称 Permgen):
+每个Java程序的内存都受到限制, 在JVM启动时, 由参数决定了其最大内存。JVM将程序内存分为两个部分: 堆内存(Heap space)和 永久代(Permanent Generation, 简称 Permgen):
 
 
 ![](01_01_java-heap-space.png)
 
 
-
 The size of those regions is set during the Java Virtual Machine (JVM) launch and can be customized by specifying JVM parameters _-Xmx_ and _-XX:MaxPermSize_. If you do not explicitly set the sizes, platform-specific defaults will be used.
 
-在 JVM 启动时, 由参数 `-Xmx` 和 `-XX:MaxPermSize` 决定这两部分的空间大小. 如果没有指定, 则会根据机器上的物理内存决定默认大小。
-
+这两块区域的最大空间, 由JVM 启动时的 `-Xmx` 和 `-XX:MaxPermSize` 参数决定. 如果没有明确指定, 则会根据物理内存, 来决定使用哪一套默认配置。
 
 The _java.lang.OutOfMemoryError: Java heap space_ error will be triggered when the application **attempts to add more data into the heap space area, but there is not enough room for it**.
 
-在新创建对象时, 如果堆内存不足, 就会引起 `java.lang.OutOfMemoryError: Java heap space` 错误。
+在新创建对象时, 如果堆内存中的空间不足以存放, 就会引起 `java.lang.OutOfMemoryError: Java heap space` 错误。
 
 
 Note that there might be plenty of physical memory available, but the _java.lang.OutOfMemoryError: Java heap space_ error is thrown whenever the JVM reaches the heap size limit.
 
-请注意, 即便还有空闲的物理内存, 但只要JVM达到了最大堆内存限制, 就会产生 `java.lang.OutOfMemoryError: Java heap space` 错误。
-
+如果机器上还有可用的物理内存, 却发生了 `java.lang.OutOfMemoryError: Java heap space` 错误时, 那是因为 JVM 达到了最大堆内存限制。
 
 ## What is causing it?
 
@@ -33,17 +30,17 @@ Note that there might be plenty of physical memory available, but the _java.lang
 
 There most common reason for the _java.lang.OutOfMemoryError: Java heap space_ error is simple – you try to fit an XXL application into an S-sized Java heap space. That is – the application just requires more Java heap space than available to it to operate normally. Other causes for this OutOfMemoryError message are more complex and are caused by a programming error:
 
-你会发现, 大多数时候产生 `java.lang.OutOfMemoryError: Java heap space` 的原因很简单 —— 这是要把 XXL 那么强壮的身材, 往 S 号的裤衩里塞呀!. 而 Java heap space 永远都像是那最小号的衣服。其实很容易解决对不对? 换成大号的裤衩就好了嘛。 增加堆内存空间, 程序就可以正常运行. 另外的原因可能就会比较复杂, 一般都是因为代码写的有问题:
+你会发现, 大多数时候产生 `java.lang.OutOfMemoryError: Java heap space` 的原因, 就像要把 XXL 那么强壮的身材, 往 S 号的裤衩里塞呀! 而 Java heap space 永远都像是那最小号的衣服。其实很容易解决对不对? 换成大号的裤衩就好了嘛。 增加堆内存空间, 程序就可以正常运行. 另外的原因可能就会比较复杂, 一般都是因为代码写的有问题:
 
 
 *   **Spikes in usage/data volume**. The application was designed to handle a certain amount of users or a certain amount of data. When the number of users or the volume of data suddenly spikes and crosses that expected threshold, the operation which functioned normally before the spike ceases to operate and triggers the _java.lang.OutOfMemoryError: Java heap space_ error.
 
-* 超乎预期的请求高峰。 应用系统的设计一般都是有 “容量” 定义的, 例如每天处理哪个量级的数据、服务多少数量的系统用户。 如果访问量突然飙升, 类似于时间坐标系中针尖形状的图谱, 超过预期的阈值, 那么在峰值来临时, 程序可能就会卡死、并触发 _java.lang.OutOfMemoryError: Java heap space_  错误。
+* **超乎预期的访问量/请求高峰**。 应用系统设计时一般都是有 “容量” 定义的, 用来处理一定数量/量级的数据或者服务。 如果访问量突然飙升, 超过预期的阈值, 类似于时间坐标系中针尖形状的图谱, 那么在这个峰值所在的地方, 程序可能就会卡死、并触发 _java.lang.OutOfMemoryError: Java heap space_  错误。
 
 
 *   **Memory leaks**. A particular type of programming error will lead your application to constantly consume more memory. Every time the leaking functionality of the application is used it leaves some objects behind into the Java heap space. Over time the leaked objects consume all of the available Java heap space and trigger the already familiar _java.lang.OutOfMemoryError: Java heap space_ error.
 
-* **Memory leaks**. 内存泄漏也是经常出现的一种情形。程序代码中的某些错误, 导致系统消耗的内存越来越多. 每一次执行存在内存泄漏的方法/代码, 就会将更多的（垃圾）对象写入到Java堆内存中. 随着运行时间的推移, 泄漏的对象消耗了Java堆中的所有可用内存, 然后就造成了我们所熟知的 _java.lang.OutOfMemoryError: Java heap space_ 错误。
+* **Memory leaks**. 内存泄漏是经常出现的一种情形。程序代码中的某些错误, 导致系统消耗的内存越来越多. 每次执行存在内存泄漏的方法/代码, 就会将更多的（垃圾）对象存放到堆内存中. 随着运行时间的推移, 泄漏的对象消耗了堆中的所有内存, 然后我们熟悉的 _java.lang.OutOfMemoryError: Java heap space_ 错误就爆发了。
 
 
 ## Give me an example
@@ -122,7 +119,7 @@ It is fairly easy to construct a Java program that satisfies the definition of a
 
 When you execute the above code above you might expect it to run forever without any problems, assuming that the naive caching solution only expands the underlying Map to 10,000 elements, as beyond that all the keys will already be present in the HashMap. However, in reality the elements will keep being added as the Key class does not contain a proper _equals()_ implementation next to its _hashCode()_.
 
-对于上面的代码, 你可能会觉得没什么问题, 这只会缓存最多 10000 个元素, 因为所有的 key 只有这么多个. 但事实是, `Key` 类只重写了 `hashCode()` 方法, 没有重写 `equals()` 方法, 最终会导致一直往 HashMap 这添加更多的 Key。
+对于上面的代码, 你可能会觉得没什么问题, 这只会缓存最多 10000 个元素, 因为所有的 key 只有这么多个. 但事实是, `Key` 类只重写了 `hashCode()` 方法, 没有重写 `equals()` 方法, 最终会导致一直往 HashMap 中添加更多的 Key。
 
 
 As a result, over time, with the leaking code constantly used, the “cached” results end up consuming a lot of Java heap space. And when the leaked memory fills all of the available memory in the heap region and [Garbage Collection](https://plumbr.eu/handbook/what-is-garbage-collection) is not able to clean it, the _java.lang.OutOfMemoryError:Java heap space_ is thrown.
@@ -132,7 +129,7 @@ As a result, over time, with the leaking code constantly used, the “cached” 
 
 The solution would be easy – add the implementation for the _equals()_ method similar to the one below and you will be good to go. But before you manage to find the cause, you will definitely have lose some precious brain cells.
 
-解决办法很简单 —— 在类 `Key` 中实现正确的 `equals()` 方法即可：
+解决办法很简单: 在 `Key` 这个 class 中实现正确的 `equals()` 方法即可：
 
 	@Override
 	public boolean equals(Object o) {
