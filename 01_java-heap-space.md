@@ -1,6 +1,6 @@
 # Java heap space - java.lang.OutOfMemoryError:
 
-## 堆内存引起的OutOfMemoryError
+## 1. 堆内存引起的OutOfMemoryError
 
 Java applications are only allowed to use a limited amount of memory. This limit is specified during application startup. To make things more complex, Java memory is separated into two different regions. These regions are called Heap space and Permgen (for Permanent Generation):
 
@@ -201,32 +201,32 @@ At this point, make sure to clear a couple of days in your calendar (or – see 
 
 *   Get the dump at the right moment. Be prepared to get a few dumps, as when taken at a wrong time, heap dumps contain a significant amount of  noise and can be practically useless. On the other hand, every heap dump “freezes” the JVM entirely, so don’t take too many of them or your end users start facing performance issues.
 
-* 在正确的时刻获取堆转储。一般需要多个堆转储文件, 如果获取时间,堆转储包含大量噪声,可以几乎毫无用处.另一方面,每个JVM堆转储“冻结”,所以不要拿太多的或最终用户开始面临的性能问题。
+* 在正确的时刻获取堆转储。一般需要多个堆转储文件, 如果获取的时机不对, 堆转储文件中的内容可能毫无用处. 另一方面,每次执行堆转储都是对JVM的一种“冻结”, 所以不要在生产环境中执行太多的Dump操作,否则系统可能会出现各种性能问题。
 
 
 *   Find a machine that can load the dump. When your JVM-to-troubleshoot uses for example 8GB of heap, you need a machine with more than 8GB to be able to analyze heap contents. Fire up dump analysis software (we recommend [Eclipse MAT](http://www.eclipse.org/mat/), but there are also equally good alternatives available).
 
-* 找到一个机器,可以加载转储。当你JVM-to-troubleshoot使用例如8 gb堆,你需要一台机器有超过8 gb能够分析堆内容.打开转储分析软件(我们建议(Eclipse垫)(http://www.eclipse.org/mat/),但也有同样好的替代品可用)。
+* 找另一台机器来加载Dump文件。一般来说, 出问题的JVM堆内存如果是8GB, 那么分析 Heap Dump 的机器需要大于 8GB的内存. 打开转储分析软件(我们推荐[Eclipse MAT](http://www.eclipse.org/mat/) , 当然你也可以使用其他工具)。
 
 
 *   Detect the paths to GC roots of the biggest consumers of heap. We have covered this activity in a separate post [here](https://plumbr.eu/blog/memory-leaks/solving-outofmemoryerror-dump-is-not-a-waste). It is especially tough for beginners, but the practice will make you understand the structure and navigation mechanics.
 
-*检测路径GC根堆的最大的消费者。我们已经介绍了活动在一个单独的文章[这](https://plumbr.欧盟/博客/内存泄漏/ solving-outofmemoryerror-dump-is-not-a-waste)。这对于初学者尤其艰难,但这种做法会让你理解和导航结构力学。
+* 检测heap中消耗内存最大的 GC roots。详情请参考: [Solving OutOfMemoryError (part 6) – Dump is not a waste](https://plumbr.eu/blog/memory-leaks/solving-outofmemoryerror-dump-is-not-a-waste)。 这对初学者来说可能比较困难, 但这种做法会加深你对堆内存结构以及navigation的理解。
 
 
 *   Next, you need to figure out where in your source code the potentially hazardous large amount of objects is being allocated. If you have good knowledge of your application’s source code you’ll be able to do this in a couple searches.
 
-*接下来,你需要找出有潜在危险的大量源代码的对象被分配.如果你有良好的知识的应用程序的源代码可以在几个搜索。
+* 接下来,你需要找出源代码中, 可能会分配大量对象的地方. 如果你对整个程序非常熟悉, 可能只需要搜索几个地方就行了。
 
 
 Alternatively, we suggest [Plumbr, the only Java monitoring solution with automatic root cause detection](http://plumbr.eu). Among other performance problems it catches all _java.lang.OutOfMemoryError_s and automatically hands you the information about the most memory-hungry data structres. 
 
-另外,我们建议[Plumbr,唯一的Java监控解决方案与自动根源检测)(http://plumbr.eu)。它捕获所有_java.lang其他性能问题.OutOfMemoryError_s和自动给你最消耗内存的数据结构的信息。
+另外,广告一句, 我们推荐 [Plumbr, the only Java monitoring solution with automatic root cause detection](http://plumbr.eu)。 Plumbr 能捕获所有的  _java.lang.OutOfMemoryError_  以及引起的其他性能问题, 例如最消耗内存的数据结构的信息。
 
 
 Plumbr takes care of gathering the necessary data behind the scenes – this includes the relevant data about heap usage (only the object layout graph, no actual data), and also some data that you can’t even find in a heap dump. It also does the necessary data processing for you – on the fly, as soon as the JVM encounters an _java.lang.OutOfMemoryError_. Here is an example _java.lang.OutOfMemoryError_ incident alert from Plumbr:
 
-Plumbr负责幕后收集必要的数据——这包括相关数据堆使用情况(只有对象布局图,没有实际数据),还有一些数据你甚至不能发现在一个堆转储。它还为你做必要的数据处理,在飞,一旦遇到_java.lang.OutOfMemoryError_ JVM.这里有一个例子_java.lang。从Plumbr OutOfMemoryError_事件提醒:
+Plumbr 负责幕后收集数据 —— 这包括堆内存使用情况(只统计对象布局图, 不涉及实际数据), 还有普通专家在堆转储中不容易发现的其他问题。 一旦发生 _java.lang.OutOfMemoryError_ ,它还能在不停机的情况下, 为你做必要的数据处理. 下面是Plumbr 提醒的一个 _java.lang.OutOfMemoryError_ 示例:
 
 
 [![Plumbr OutOfMemoryError incident alert](https://plumbr.eu/wp-content/uploads/2015/08/outofmemoryerror-analyzed.png)](https://plumbr.eu/wp-content/uploads/2015/08/outofmemoryerror-analyzed.png)
@@ -235,38 +235,38 @@ Plumbr负责幕后收集必要的数据——这包括相关数据堆使用情�
 
 Without any additional tooling or analysis you can see:
 
-没有任何额外的工具或分析可以看到:
+强大吧, 不需要其他任何的工具和分析就能看到结果:
 
 
 *   Which objects are consuming the most memory (271 _com.example.map.impl.PartitionContainer_ instances consume 173MB out of 248MB total heap)
 
-*哪些对象(271 _com.example.map.impl消耗最记忆。PartitionContainer_实例使用173 mb的248 mb总堆)
+* 哪些对象占用了最多的内存(此处是 271 个 _com.example.map.impl.PartitionContainer_ 实例消耗了 172MB的内存, 整个堆内存只有 248MB)
 
 
 *   Where these objects were allocated (most of them allocated in the _MetricManagerImpl_ class, line 304)
 
-*这些对象被分配(其中大部分是分配在_MetricManagerImpl_类,第304行)
+* 这些对象在何处创建的(其中大部分是在 _MetricManagerImpl_ 类,第304行处)
 
 
 *   What is currently referencing these objects (the full reference chain up to GC root)
 
-*目前引用这些对象(完整的引用链GC根)
+* 当前是谁在引用这些对象(从 GC root 开始的完整的引用链)
 
 
 Equipped with this information you can zoom in to the underlying root cause and make sure the data structures are trimmed down to the levels where they would fit nicely into your memory pools.
 
-配备了这些信息,你就可以放大到底层的根源,确保数据结构修剪下来的水平,他们会很好地融入你的内存池。
+分析得出这些信息之后, 你就可以定位到底层的根源, 精简必要的数据结构和模型, 这样就会只占用合理的内存。
 
 However, when your conclusion from memory analysis or from reading the Plumbr report are that memory use is legal and there is nothing to change in the source code, you need to allow your JVM more Java heap space to run properly. In this case, alter your JVM launch configuration and add (or increase the value if present) the following:
 
-然而,当你的结论从内存分析或阅读Plumbr报告内存使用是合法的,没有什么改变在源代码中,你需要让你的JVM更多的Java堆空间正常运行。在这种情况下,改变你的JVM启动配置和添加(如果存在)或增加价值如下:
+当然, 根据内存分析结果, 以及Plumbr的报告, 如果发现内存占用很合理, 也不需要修改源代码的话, 那就增大堆内存配置吧。在这种情况下,修改JVM启动参数, (按比例)增加下面的值:
 
 
 	-Xmx1024m
 
 The above configuration would give the application 1024MB of Java heap space. You can use g or G for GB, m or M for MB, k or K for KB. For example all of the following are equivalent to saying that the maximum Java heap space is 1GB:
 
-这里配置Java堆空间为 1024MB。可以使用 g/G 表示 GB, m/M 代表 MB, k/K 表示 KB. 所以下面的这些形式都是等价的, 设置Java堆的最大空间是 1GB:
+这里配置Java堆内存最多为 `1024MB`。可以使用 `g/G` 表示 GB, `m/M` 代表 MB, `k/K` 表示 KB. 所以下面的这些形式都是等价的, 设置Java堆的最大空间为 1GB:
 
 
 	java -Xmx1073741824 com.mycompany.MyClass
