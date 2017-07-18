@@ -196,12 +196,12 @@ At this point, make sure to clear a couple of days in your calendar (or – see 
 
 * Get security clearance in order to perform a heap dump from your JVM. “Dumps” are basically snapshots of heap contents that you can analyze. These snapshot can thus contain confidential information, such as passwords, credit card numbers etc, so acquiring such a dump might not even be possible for security reasons.
 
-* 获得安全间隙为了执行一个JVM堆转储。“转储”基本上是堆内容的快照,您可以分析.这些快照可以包含机密信息,如密码、信用卡号码等,所以获得这样一个转储甚至可能不可能出于安全原因。
+* 获得可以在服务器上执行堆转储(heap dump)的权限。“转储”(Dump)是堆内存的快照, 稍后可以用于内存分析. 这些快照有可能会包含机密信息, 例如密码、信用卡卡号等, 所以有时候, 由于安全原因, 很难获得生产环境的堆转储文件。
 
 
 *   Get the dump at the right moment. Be prepared to get a few dumps, as when taken at a wrong time, heap dumps contain a significant amount of  noise and can be practically useless. On the other hand, every heap dump “freezes” the JVM entirely, so don’t take too many of them or your end users start facing performance issues.
 
-* 获取转储在正确的时刻。准备几个转储,当在一个错误的时间,堆转储包含大量噪声,可以几乎毫无用处.另一方面,每个JVM堆转储“冻结”,所以不要拿太多的或最终用户开始面临的性能问题。
+* 在正确的时刻获取堆转储。一般需要多个堆转储文件, 如果获取时间,堆转储包含大量噪声,可以几乎毫无用处.另一方面,每个JVM堆转储“冻结”,所以不要拿太多的或最终用户开始面临的性能问题。
 
 
 *   Find a machine that can load the dump. When your JVM-to-troubleshoot uses for example 8GB of heap, you need a machine with more than 8GB to be able to analyze heap contents. Fire up dump analysis software (we recommend [Eclipse MAT](http://www.eclipse.org/mat/), but there are also equally good alternatives available).
