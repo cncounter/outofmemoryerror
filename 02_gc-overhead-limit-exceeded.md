@@ -40,15 +40,13 @@ In the following example we create a “_GC overhead limit exceeded_” error by
 
 As you might guess this cannot end well. And, indeed, when we launch the above program with:
 
-```
-`java -Xmx100m -XX:+UseParallelGC Wrapper`
-```
+    java -Xmx100m -XX:+UseParallelGC Wrapper`
+
 
 we soon face the _java.lang.OutOfMemoryError: GC overhead limit exceeded_ message. But the above example is tricky. When launched with different Java heap size or a different [GC algorithm](https://plumbr.eu/handbook/garbage-collection-algorithms-implementations), my Mac OS X 10.9.2 with Hotspot 1.7.0_45 will choose to die differently. For example, when I run the program with smaller Java heap size like this:
 
-```
-`java -Xmx10m -XX:+UseParallelGC Wrapper`
-```
+    java -Xmx10m -XX:+UseParallelGC Wrapper`
+
 
 the application will die with a more common _java.lang.OutOfMemoryError: Java heap space_ message that is thrown on Map resize. And when I run it with other [garbage collection algorithms](https://plumbr.eu/handbook/garbage-collection-algorithms-implementations) besides [ParallelGC](https://plumbr.eu/handbook/garbage-collection-algorithms-implementations/parallel-gc), such as [-XX:+UseConcMarkSweepGC](https://plumbr.eu/handbook/garbage-collection-algorithms-implementations/concurrent-mark-and-sweep) or [-XX:+UseG1GC](https://plumbr.eu/handbook/garbage-collection-algorithms-implementations/g1), the error is caught by the default exception handler and is without stacktrace as the heap is exhausted to the extent where the [stacktrace cannot even be filled](https://plumbr.eu/blog/how-not-to-create-a-permgen-leak) on Exception creation.
 
@@ -59,9 +57,8 @@ These variations are truly good examples that demonstrate that in resource-const
 
 As a tongue-in-cheek solution, if you just wished to get rid of the “_java.lang.OutOfMemoryError: GC overhead limit exceeded_” message, adding the following to your startup scripts would achieve just that:
 
-```
-`-XX:-UseGCOverheadLimit`
-```
+    -XX:-UseGCOverheadLimit`
+
 
 I would **strongly suggest NOT to use this option** though – instead of fixing the problem you just postpone the inevitable: the application running out of memory and needing to be fixed. Specifying this option will just mask the original _java.lang.OutOfMemoryError: GC overhead limit exceeded_ error with a more familiar message _java.lang.OutOfMemoryError: Java heap space_.
 
@@ -108,8 +105,7 @@ Equipped with this information you can zoom in to the underlying root cause and 
 
 However, when your conclusion from memory analysis or from reading the Plumbr report are that memory use is legal and there is nothing to change in the source code, you need to allow your JVM more Java heap space to run properly. In this case, alter your JVM launch configuration and add (or increase the value if present) just one parameter in your startup scripts:
 
-```
-`java -Xmx1024m com.yourcompany.YourClass`
-```
+    java -Xmx1024m com.yourcompany.YourClass`
+
 
 In the above example the Java process is given 1GB of heap. Modify the value as best fits to your JVM. However, if the result is that your JVM still dies with OutOfMemoryError, you might still not be able to avoid the manual or Plumbr-assisted analysis described above.
