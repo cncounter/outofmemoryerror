@@ -117,7 +117,7 @@ public class KeylessEntry {
         }
     }
 }
-````
+```
 
 
 When you execute the above code above you might expect it to run forever without any problems, assuming that the naive caching solution only expands the underlying Map to 10,000 elements, as beyond that all the keys will already be present in the HashMap. However, in reality the elements will keep being added as the Key class does not contain a proper _equals()_ implementation next to its _hashCode()_.
