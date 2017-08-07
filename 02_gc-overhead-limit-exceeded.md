@@ -1,24 +1,22 @@
 # java.lang.OutOfMemoryError:
 **GC overhead limit exceeded**
 
-# 超过GC限制的OutOfMemoryError:
-
-> java.lang.OutOfMemoryError: **GC overhead limit exceeded**
+# OutOfMemoryError系列（2）: GC overhead limit exceeded
 
 
 Java runtime environment contains a built-in [Garbage Collection (GC)](https://plumbr.eu/handbook/what-is-garbage-collection) process. In many other programming languages, the developers need to manually allocate and free memory regions so that the freed memory can be reused.
 
-Java运行时环境内置集成了的 [Garbage Collection (GC)](http://blog.csdn.net/renfufei/article/details/53432995) 模块. 在很多编程语言中, 程序员需要手动分配和释放内存, 以便可以重用内存区域。
+Java运行时环境内置了 [垃圾收集(GC)](http://blog.csdn.net/renfufei/article/details/53432995) 模块. 在没有自动内存回收的编程语言中, 程序员需要手动分配和释放内存, 以重复利用堆内存。
 
 
 Java applications on the other hand only need to allocate memory. Whenever a particular space in memory is no longer used, a separate process called [Garbage Collection](https://plumbr.eu/handbook/garbage-collection-in-jvm) clears the memory for them. How the GC detects that a particular part of memory is explained in more detail in the [Garbage Collection Handbook](https://plumbr.eu/java-garbage-collection-handbook), but you can trust the GC to do its job well.
 
-另一方面, Java程序只需要分配内存。当程序不再使用某部分内存, 一个叫做[Garbage Collection](http://blog.csdn.net/renfufei/article/details/54144385) 的程序就可以执行内存清理。GC的详细原理请参考 [GC性能优化](http://blog.csdn.net/column/details/14851.html), 我们相信JVM中的GC处理程序能够应对绝大多数的情形。
+换句话说, 在Java中你只需要分配内存就行。 如果某块内存不再使用, 就会被[垃圾收集(Garbage Collection)](http://blog.csdn.net/renfufei/article/details/54144385) 模块自动清理。GC的详细原理请参考 [GC性能优化](http://blog.csdn.net/column/details/14851.html), 请相信,JVM内置的垃圾收集器能够应对绝大多数的情形。
 
 
 The _java.lang.OutOfMemoryError: GC overhead limit exceeded_ error is displayed when **your application has exhausted pretty much all the available memory and GC has repeatedly failed to clean it**.
 
-_java.lang.OutOfMemoryError: GC overhead limit exceeded_ 错误发生的情况是, **您的应用基本上耗尽了所有的可用内存, GC也清理不了**。
+_java.lang.OutOfMemoryError: GC overhead limit exceeded_ 这种情况发生的原因是, **您的程序基本上耗尽了所有的内存, GC也清理不了**。
 
 
 ## What is causing it?
