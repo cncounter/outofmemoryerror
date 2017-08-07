@@ -16,7 +16,7 @@ Java applications on the other hand only need to allocate memory. Whenever a par
 
 The _java.lang.OutOfMemoryError: GC overhead limit exceeded_ error is displayed when **your application has exhausted pretty much all the available memory and GC has repeatedly failed to clean it**.
 
-_java.lang.OutOfMemoryError: GC overhead limit exceeded_ 这种情况发生的原因是, **您的程序基本上耗尽了所有的内存, GC也清理不了**。
+_java.lang.OutOfMemoryError: GC overhead limit exceeded_ 这种情况发生的原因是, **应用程序基本上耗尽了所有可用内存, GC也清理不了**。
 
 
 ## What is causing it?
@@ -26,17 +26,15 @@ _java.lang.OutOfMemoryError: GC overhead limit exceeded_ 这种情况发生的�
 
 The _java.lang.OutOfMemoryError: GC overhead limit exceeded_ error is the JVM’s way of signalling that your application spends too much time doing garbage collection with too little result. By default the JVM is configured to throw this error if it spends more than **98% of the total time doing GC and when after the GC only less than 2% of the heap is recovered**.
 
-_java.lang。OutOfMemoryError:GC开销限制exceeded_错误是JVM的方式表明应用程序花了太多时间做垃圾收集和太少的结果.JVM默认配置为抛出这个错误如果它花费超过* * 98%后的总时间做GC和GC堆只有不到2%的* *中恢复过来。
+_java.lang.OutOfMemoryError: GC overhead limit exceeded_ 是JVM发出了这样的信号: 执行垃圾收集的时间比例太大, 有效的运算量太小. 默认情况下, 如果GC花费的时间超过 **98%**, 并且GC回收的内存少于 **2%**, JVM就会抛出这个错误。
 
 
-![java.lang.OutOfMemoryError: GC overhead limit exceeded](https://plumbr.eu/wp-content/uploads/2014/04/OOM-example-schema3.png)
-
-![. lang。OutOfMemoryError:GC开销限制超过](https://plumbr.eu/wp-content/uploads/2014/04/OOM-example-schema3.png)
+![java.lang.OutOfMemoryError: GC overhead limit exceeded](02_01_OOM-example-schema3.png)
 
 
 What would happen if this GC overhead limit would not exist? Note that the _java.lang.OutOfMemoryError: GC overhead limit exceeded_ error is only thrown when 2% of the memory is freed after several [GC cycles](https://plumbr.eu/handbook/garbage-collection-algorithms-implementations). This means that the small amount of heap the GC is able to clean will likely be quickly filled again, forcing the GC to restart the cleaning process again. This forms a vicious cycle where the CPU is 100% busy with GC and no actual work can be done. End users of the application face extreme slowdowns – operations which normally complete in milliseconds take minutes to finish.
 
-会发生什么如果这个GC开销限制不存在吗?注意,_java.lang.只是抛出OutOfMemoryError:GC开销限制exceeded_错误当2%的内存被释放后几个(GC周期)(https://plumbr.eu/handbook/garbage-collection-algorithms-implementations).这意味着少量的GC堆能够清洁可能会很快再次填满,迫使GC再次重新启动清洗过程.这形成了一个恶性循环的CPU是100%忙碌与GC和没有实际工作可以做.应用程序的最终用户面临极端减速-操作通常在毫秒完成花费分钟完成。
+会发生什么如果这个GC开销限制不存在吗?注意,_java.lang.只是抛出OutOfMemoryError:GC开销限制exceeded_错误当2%的内存被释放后几个(GC周期)(https://plumbr.eu/handbook/garbage-collection-algorithms-implementations). 这意味着少量的GC堆能够清洁可能会很快再次填满,迫使GC再次重新启动清洗过程.这形成了一个恶性循环的CPU是100%忙碌与GC和没有实际工作可以做.应用程序的最终用户面临极端减速-操作通常在毫秒完成花费分钟完成。
 
 
 So the “_java.lang.OutOfMemoryError: GC overhead limit exceeded_” message is a pretty nice example of a [fail fast](http://en.wikipedia.org/wiki/Fail-fast) principle in action.
