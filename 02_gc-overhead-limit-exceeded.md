@@ -1,6 +1,3 @@
-# java.lang.OutOfMemoryError:
-**GC overhead limit exceeded**
-
 # OutOfMemoryError系列（2）: GC overhead limit exceeded
 
 
@@ -34,58 +31,84 @@ _java.lang.OutOfMemoryError: GC overhead limit exceeded_ 是JVM发出了这样�
 
 What would happen if this GC overhead limit would not exist? Note that the _java.lang.OutOfMemoryError: GC overhead limit exceeded_ error is only thrown when 2% of the memory is freed after several [GC cycles](https://plumbr.eu/handbook/garbage-collection-algorithms-implementations). This means that the small amount of heap the GC is able to clean will likely be quickly filled again, forcing the GC to restart the cleaning process again. This forms a vicious cycle where the CPU is 100% busy with GC and no actual work can be done. End users of the application face extreme slowdowns – operations which normally complete in milliseconds take minutes to finish.
 
-会发生什么如果这个GC开销限制不存在吗?注意,_java.lang.只是抛出OutOfMemoryError:GC开销限制exceeded_错误当2%的内存被释放后几个(GC周期)(https://plumbr.eu/handbook/garbage-collection-algorithms-implementations). 这意味着少量的GC堆能够清洁可能会很快再次填满,迫使GC再次重新启动清洗过程.这形成了一个恶性循环的CPU是100%忙碌与GC和没有实际工作可以做.应用程序的最终用户面临极端减速-操作通常在毫秒完成花费分钟完成。
+注意, _java.lang.OutOfMemoryError: GC overhead limit exceeded_ 错误只在连续多次 [GC](http://blog.csdn.net/renfufei/article/details/54885190) 都只回收了不到2%的极端情况下才会抛出。假如不抛出 `GC overhead limit` 错误会发生什么情况呢? 那就是GC清理的这么点内存很快会再次填满, 迫使GC再次执行. 这样就形成恶性循环, CPU使用率一直是100%, 而GC却没有任何成果. 系统用户就会看到系统卡死 - 以前只需要几毫秒的操作, 现在需要好几分钟才能完成。
 
 
 So the “_java.lang.OutOfMemoryError: GC overhead limit exceeded_” message is a pretty nice example of a [fail fast](http://en.wikipedia.org/wiki/Fail-fast) principle in action.
 
-所以“_java.lang。OutOfMemoryError:GC开销限制exceeded_”消息是一个很好的例子(快速失败)(http://en.wikipedia.org/wiki/Fail-fast)的原则。
+这也是 [快速失败原则](http://en.wikipedia.org/wiki/Fail-fast) 的一个很好的案例。
 
 
 ## Give me an example
 
-## 给我一个例子
+## 示例
 
 
 In the following example we create a “_GC overhead limit exceeded_” error by initializing a Map and adding key-value pairs into the map in an unterminated loop:
 
-在以下示例中,我们创建一个“_GC开销限制exceeded_”错误的初始化地图,在地图中添加键值对一个无端接的循环:
+以下代码在无限循环中往 Map 里添加数据。 这会导致 “_GC overhead limit exceeded_” 错误:
 
 
 ```
- class Wrapper {
-  public static void main(String args[]) throws Exception {
-    Map map = System.getProperties();
-    Random r = new Random();
-    while (true) {
-      map.put(r.nextInt(), "value");
+package com.cncounter.rtime;
+import java.util.Map;
+import java.util.Random;
+public class TestWrapper {
+    public static void main(String args[]) throws Exception {
+        Map map = System.getProperties();
+        Random r = new Random();
+        while (true) {
+            map.put(r.nextInt(), "value");
+        }
     }
-  }
-} 
+}
 ```
 
-长度超标,拒绝翻译!
+配置JVM参数: `-Xmx12m`。执行时产生的错误信息如下所示:
+
+```
+Exception in thread "main" java.lang.OutOfMemoryError: GC overhead limit exceeded
+	at java.util.Hashtable.addEntry(Hashtable.java:435)
+	at java.util.Hashtable.put(Hashtable.java:476)
+	at com.cncounter.rtime.TestWrapper.main(TestWrapper.java:11)
+```
 
 
 As you might guess this cannot end well. And, indeed, when we launch the above program with:
 
-你可能会想这不能结束。确实,当我们启动上述计划:
+
+你碰到的错误信息不一定就是这个。确实, 我们执行的JVM参数为:
 
 
-    java -Xmx100m -XX:+UseParallelGC Wrapper`
-
-
-
+```
+java -Xmx12m -XX:+UseParallelGC TestWrapper
+```
 
 we soon face the _java.lang.OutOfMemoryError: GC overhead limit exceeded_ message. But the above example is tricky. When launched with different Java heap size or a different [GC algorithm](https://plumbr.eu/handbook/garbage-collection-algorithms-implementations), my Mac OS X 10.9.2 with Hotspot 1.7.0_45 will choose to die differently. For example, when I run the program with smaller Java heap size like this:
 
-我们很快面临_java.lang。OutOfMemoryError:GC开销限制exceeded_消息。但是上面的例子是很棘手的.当推出不同的Java堆大小或不同的GC算法(https://plumbr.eu/handbook/garbage-collection-algorithms-implementations),我的Mac OS X 1.7 10.9.2与热点.0 _45会选择不同的死亡。例如,当我运行程序更小的Java堆大小是这样的:
+很快就看到了 _java.lang.OutOfMemoryError: GC overhead limit exceeded_ 错误提示消息。但实际上这个示例是有些坑的. 因为配置不同的堆内存大小, 选用不同的[GC算法](http://blog.csdn.net/renfufei/article/details/54885190), 产生的错误信息也不相同。例如,当Java堆内存设置为10M时:
 
 
-    java -Xmx10m -XX:+UseParallelGC Wrapper`
+```
+java -Xmx10m -XX:+UseParallelGC TestWrapper
+```
+
+DEBUG模式下错误信息如下所示:
+
+```
+Exception in thread "main" java.lang.OutOfMemoryError: Java heap space
+	at java.util.Hashtable.rehash(Hashtable.java:401)
+	at java.util.Hashtable.addEntry(Hashtable.java:425)
+	at java.util.Hashtable.put(Hashtable.java:476)
+	at com.cncounter.rtime.TestWrapper.main(TestWrapper.java:11)
+```
+
+读者应该试着修改参数, 执行看看具体。错误提示以及堆栈信息可能不太一样。
 
 
-
+######################
+######################
+######################
 
 the application will die with a more common _java.lang.OutOfMemoryError: Java heap space_ message that is thrown on Map resize. And when I run it with other [garbage collection algorithms](https://plumbr.eu/handbook/garbage-collection-algorithms-implementations) besides [ParallelGC](https://plumbr.eu/handbook/garbage-collection-algorithms-implementations/parallel-gc), such as [-XX:+UseConcMarkSweepGC](https://plumbr.eu/handbook/garbage-collection-algorithms-implementations/concurrent-mark-and-sweep) or [-XX:+UseG1GC](https://plumbr.eu/handbook/garbage-collection-algorithms-implementations/g1), the error is caught by the default exception handler and is without stacktrace as the heap is exhausted to the extent where the [stacktrace cannot even be filled](https://plumbr.eu/blog/how-not-to-create-a-permgen-leak) on Exception creation.
 
@@ -179,9 +202,7 @@ Alternatively, we suggest [Plumbr, the only Java monitoring solution with automa
 另外,我们建议[Plumbr,唯一的Java监控解决方案与自动根源检测)(http://plumbr.eu)。它捕获所有_java.lang其他性能问题.OutOfMemoryError_s和自动给你最消耗内存的数据结构的信息.它负责收集必要的数据在幕后——这包括相关数据堆使用情况(只有对象布局图,没有实际数据),还有一些数据你甚至不能发现在一个堆转储。它还为你做必要的数据处理,在飞,一旦遇到_java.lang.OutOfMemoryError_ JVM.这里有一个例子_java.lang。从Plumbr OutOfMemoryError_事件提醒:
 
 
-[![Plumbr OutOfMemoryError incident alert](https://plumbr.eu/wp-content/uploads/2015/08/outofmemoryerror-analyzed.png)](https://plumbr.eu/wp-content/uploads/2015/08/outofmemoryerror-analyzed.png)
-
-[!(Plumbr OutOfMemoryError事件警报)(https://plumbr.eu/wp-content/uploads/2015/08/outofmemoryerror-analyzed.png))(https://plumbr.eu/wp-content/uploads/2015/08/outofmemoryerror-analyzed.png)
+![Plumbr OutOfMemoryError incident alert](02_02_outofmemoryerror-analyzed.png)
 
 
 Without any additional tooling or analysis you can see:
