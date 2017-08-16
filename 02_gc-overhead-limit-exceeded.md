@@ -106,23 +106,23 @@ Exception in thread "main" java.lang.OutOfMemoryError: Java heap space
 读者应该试着修改参数, 执行看看具体。错误提示以及堆栈信息可能不太一样。
 
 
-######################
-######################
-######################
-
 the application will die with a more common _java.lang.OutOfMemoryError: Java heap space_ message that is thrown on Map resize. And when I run it with other [garbage collection algorithms](https://plumbr.eu/handbook/garbage-collection-algorithms-implementations) besides [ParallelGC](https://plumbr.eu/handbook/garbage-collection-algorithms-implementations/parallel-gc), such as [-XX:+UseConcMarkSweepGC](https://plumbr.eu/handbook/garbage-collection-algorithms-implementations/concurrent-mark-and-sweep) or [-XX:+UseG1GC](https://plumbr.eu/handbook/garbage-collection-algorithms-implementations/g1), the error is caught by the default exception handler and is without stacktrace as the heap is exhausted to the extent where the [stacktrace cannot even be filled](https://plumbr.eu/blog/how-not-to-create-a-permgen-leak) on Exception creation.
 
-应用程序将死_java.lang更为常见。抛出OutOfMemoryError:Java堆space_消息映射调整.当我运行它与其他(垃圾收集算法)除了[ParallelGC](https://plumbr(https://plumbr.eu/handbook/garbage-collection-algorithms-implementations).欧盟/手册/ garbage-collection-algorithms-implementations / parallel-gc),如(- xx:+ UseConcMarkSweepGC)(https://plumbr.欧盟/手册/ garbage-collection-algorithms-implementations concurrent-mark-and-sweep)或(- xx:+ UseG1GC)(https://plumbr.欧盟/手册/ garbage-collection-algorithms-implementations / g1),错误被默认的异常处理程序和没有加堆疲惫的程度(加亮甚至不能填)(https://plumbr.欧盟/博客/ how-not-to-create-a-permgen-leak)创造例外。
+这里在 Map 进行 `rehash` 时抛出了 _java.lang.OutOfMemoryError: Java heap space_ 错误消息. 如果使用其他 [垃圾收集算法](http://blog.csdn.net/renfufei/article/details/54885190), 比如 [-XX:+UseConcMarkSweepGC](http://blog.csdn.net/renfufei/article/details/54885190#t6), 或者 [-XX:+UseG1GC](http://blog.csdn.net/renfufei/article/details/54885190#t9), 错误将被默认的 exception handler 所捕获, 但是没有 stacktrace 信息, 因为在创建 Exception 时 [没办法填充stacktrace信息](https://plumbr.eu/blog/how-not-to-create-a-permgen-leak)。
 
 
 These variations are truly good examples that demonstrate that in resource-constrained situations you cannot predict the way your application is going to die so do not base your expectations on a specific sequence of actions to be completed.
 
-这些变化是真正的好例子,证明在资源受限的情况下,您无法预测的方式您的应用程序会死所以不要基础上你的期望 特定的序列操作完成。
+这些情况是很生动的例子, 表明在资源受限的情况下, 无法预测程序会死于哪种具体的原因。所以在这类错误面前, 不能依赖特定的操作序列。
 
+
+######################
+######################
+######################
 
 ## What is the solution?
 
-## 解决方案是什么?
+## 解决方案
 
 
 As a tongue-in-cheek solution, if you just wished to get rid of the “_java.lang.OutOfMemoryError: GC overhead limit exceeded_” message, adding the following to your startup scripts would achieve just that:
