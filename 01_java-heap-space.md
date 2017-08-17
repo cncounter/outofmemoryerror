@@ -373,7 +373,7 @@ Without any additional tooling or analysis you can see:
 
 *   Which objects are consuming the most memory (271 _com.example.map.impl.PartitionContainer_ instances consume 173MB out of 248MB total heap)
 
-* 哪类对象占用了最多的内存(此处是 271 个 _com.example.map.impl.PartitionContainer_ 实例, 消耗了 172MB 内存, 而堆内存只有 248MB)
+* 哪类对象占用了最多的内存(此处是 271 个 _com.example.map.impl.PartitionContainer_ 实例, 消耗了 173MB 内存, 而堆内存只有 248MB)
 
 
 *   Where these objects were allocated (most of them allocated in the _MetricManagerImpl_ class, line 304)
