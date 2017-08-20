@@ -3,17 +3,17 @@
 
 Java runtime environment contains a built-in [Garbage Collection (GC)](https://plumbr.eu/handbook/what-is-garbage-collection) process. In many other programming languages, the developers need to manually allocate and free memory regions so that the freed memory can be reused.
 
-Java运行时环境内置了 [垃圾收集(GC)](http://blog.csdn.net/renfufei/article/details/53432995) 模块. 在没有自动内存回收的编程语言中, 程序员需要手动分配和释放内存, 以重复利用堆内存。
+JVM内置了 [垃圾收集(GC)](http://blog.csdn.net/renfufei/article/details/53432995) 模块. 在没有自动内存回收的编程语言中, 程序员需要手动分配和释放内存, 以重复利用堆内存。
 
 
 Java applications on the other hand only need to allocate memory. Whenever a particular space in memory is no longer used, a separate process called [Garbage Collection](https://plumbr.eu/handbook/garbage-collection-in-jvm) clears the memory for them. How the GC detects that a particular part of memory is explained in more detail in the [Garbage Collection Handbook](https://plumbr.eu/java-garbage-collection-handbook), but you can trust the GC to do its job well.
 
-换句话说, 在Java中你只需要分配内存就行。 如果某块内存不再使用, 就会被[垃圾收集(Garbage Collection)](http://blog.csdn.net/renfufei/article/details/54144385) 模块自动清理。GC的详细原理请参考 [GC性能优化](http://blog.csdn.net/column/details/14851.html), 请相信,JVM内置的垃圾收集器能够应对绝大多数的情形。
+在Java中, 你只需要分配内存就行。如果某块内存不再使用, [垃圾收集(Garbage Collection)](http://blog.csdn.net/renfufei/article/details/54144385) 模块会自动执行清理。GC的详细原理请参考 [GC性能优化](http://blog.csdn.net/column/details/14851.html), 一般来说, JVM内置的垃圾收集器能够应对绝大多数的情形。
 
 
 The _java.lang.OutOfMemoryError: GC overhead limit exceeded_ error is displayed when **your application has exhausted pretty much all the available memory and GC has repeatedly failed to clean it**.
 
-_java.lang.OutOfMemoryError: GC overhead limit exceeded_ 这种情况发生的原因是, **应用程序基本上耗尽了所有可用内存, GC也清理不了**。
+_java.lang.OutOfMemoryError: GC overhead limit exceeded_ 这种情况发生的原因是, **程序基本上耗尽了所有的可用内存, GC也清理不了**。
 
 
 ## What is causing it?
@@ -23,7 +23,7 @@ _java.lang.OutOfMemoryError: GC overhead limit exceeded_ 这种情况发生的�
 
 The _java.lang.OutOfMemoryError: GC overhead limit exceeded_ error is the JVM’s way of signalling that your application spends too much time doing garbage collection with too little result. By default the JVM is configured to throw this error if it spends more than **98% of the total time doing GC and when after the GC only less than 2% of the heap is recovered**.
 
-_java.lang.OutOfMemoryError: GC overhead limit exceeded_ 是JVM发出了这样的信号: 执行垃圾收集的时间比例太大, 有效的运算量太小. 默认情况下, 如果GC花费的时间超过 **98%**, 并且GC回收的内存少于 **2%**, JVM就会抛出这个错误。
+JVM抛出 _java.lang.OutOfMemoryError: GC overhead limit exceeded_ 错误就是发出了这样的信号: 执行垃圾收集的时间比例太大, 有效的运算量太小. 默认情况下, 如果GC花费的时间超过 **98%**, 并且GC回收的内存少于 **2%**, JVM就会抛出这个错误。
 
 
 ![java.lang.OutOfMemoryError: GC overhead limit exceeded](02_01_OOM-example-schema3.png)
