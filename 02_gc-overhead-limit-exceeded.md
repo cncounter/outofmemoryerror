@@ -3,12 +3,12 @@
 
 Java runtime environment contains a built-in [Garbage Collection (GC)](https://plumbr.eu/handbook/what-is-garbage-collection) process. In many other programming languages, the developers need to manually allocate and free memory regions so that the freed memory can be reused.
 
-JVM内置了 [垃圾收集(GC)](http://blog.csdn.net/renfufei/article/details/53432995) 模块. 在没有自动内存回收的编程语言中, 程序员需要手动分配和释放内存, 以重复利用堆内存。
+Java运行时环境内置了 [垃圾收集(GC)](http://blog.csdn.net/renfufei/article/details/53432995) 模块. 上一代的很多编程语言中并没有自动内存回收机制, 需要程序员手工编写代码来进行内存分配和释放, 以重复利用堆内存。
 
 
 Java applications on the other hand only need to allocate memory. Whenever a particular space in memory is no longer used, a separate process called [Garbage Collection](https://plumbr.eu/handbook/garbage-collection-in-jvm) clears the memory for them. How the GC detects that a particular part of memory is explained in more detail in the [Garbage Collection Handbook](https://plumbr.eu/java-garbage-collection-handbook), but you can trust the GC to do its job well.
 
-在Java中, 你只需要分配内存就行。如果某块内存不再使用, [垃圾收集(Garbage Collection)](http://blog.csdn.net/renfufei/article/details/54144385) 模块会自动执行清理。GC的详细原理请参考 [GC性能优化](http://blog.csdn.net/column/details/14851.html), 一般来说, JVM内置的垃圾收集器能够应对绝大多数的情形。
+在Java程序中, 只需要关心内存分配就行。如果某块内存不再使用, [垃圾收集(Garbage Collection)](http://blog.csdn.net/renfufei/article/details/54144385) 模块会自动执行清理。GC的详细原理请参考 [GC性能优化](http://blog.csdn.net/column/details/14851.html) 系列文章, 一般来说, JVM内置的垃圾收集算法就能够应对绝大多数的业务场景。
 
 
 The _java.lang.OutOfMemoryError: GC overhead limit exceeded_ error is displayed when **your application has exhausted pretty much all the available memory and GC has repeatedly failed to clean it**.
