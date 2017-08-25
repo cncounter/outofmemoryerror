@@ -36,7 +36,7 @@ What would happen if this GC overhead limit would not exist? Note that the _java
 
 So the “_java.lang.OutOfMemoryError: GC overhead limit exceeded_” message is a pretty nice example of a [fail fast](http://en.wikipedia.org/wiki/Fail-fast) principle in action.
 
-这也是 [快速失败原则](http://en.wikipedia.org/wiki/Fail-fast) 的一个很好的案例。
+这也是一个很好的 [快速失败原则](http://en.wikipedia.org/wiki/Fail-fast) 的案例。
 
 
 ## Give me an example
@@ -129,7 +129,7 @@ Exception: java.lang.OutOfMemoryError thrown from the UncaughtExceptionHandler i
 
 These variations are truly good examples that demonstrate that in resource-constrained situations you cannot predict the way your application is going to die so do not base your expectations on a specific sequence of actions to be completed.
 
-这些真实的案例表明, 在资源受限的情况下, 无法准确预测程序会死于哪种具体的原因。所以在这类错误面前, 不能依赖特定的操作序列。
+这些真实的案例表明, 在资源受限的情况下, 无法准确预测程序会死于哪种具体的原因。所以在这类错误面前, 不能绑死某种特定的错误处理顺序。
 
 
 ######################
@@ -143,7 +143,7 @@ These variations are truly good examples that demonstrate that in resource-const
 
 As a tongue-in-cheek solution, if you just wished to get rid of the “_java.lang.OutOfMemoryError: GC overhead limit exceeded_” message, adding the following to your startup scripts would achieve just that:
 
-有种不是很好的解决方案, 如果不想抛出 “_java.lang.OutOfMemoryError: GC overhead limit exceeded_” 错误信息, 添加以下启动参数即可:
+有一种应付了事的解决方案, 就是不想抛出 “_java.lang.OutOfMemoryError: GC overhead limit exceeded_” 错误信息, 则添加下面启动参数:
 
 ```
 // 不推荐
@@ -154,24 +154,24 @@ As a tongue-in-cheek solution, if you just wished to get rid of the “_java.lan
 
 I would **strongly suggest NOT to use this option** though – instead of fixing the problem you just postpone the inevitable: the application running out of memory and needing to be fixed. Specifying this option will just mask the original _java.lang.OutOfMemoryError: GC overhead limit exceeded_ error with a more familiar message _java.lang.OutOfMemoryError: Java heap space_.
 
-我们强烈建议不要指定该选项 —— 因为这不能解决问题，只是推迟了一会儿 out of memory 错误的产生时机，最后需要修复。指定这个选项, 会将原来的 _java.lang.OutOfMemoryError: GC overhead limit exceeded_ 错误屏蔽，换成更常见的 _java.lang.OutOfMemoryError: Java heap space_ 错误消息。
+我们强烈建议不要指定该选项: 因为这不能真正地解决问题，只能推迟一点 `out of memory` 错误发生的时间，到最后还得进行其他处理。指定这个选项, 会将原来的 _java.lang.OutOfMemoryError: GC overhead limit exceeded_ 错误掩盖，变成更常见的 _java.lang.OutOfMemoryError: Java heap space_ 错误消息。
 
 
 On a more serious note – sometimes the GC overhead limit error is triggered because the amount of heap you have allocated to your JVM is just not enough to accommodate the needs of your applications running on that JVM. In that case, you should just allocate more heap – see at the end of this chapter for how to achieve that. 
 
-需要注意 —— 有时候, 触发 GC overhead limit 错误的原因,是因为分配给JVM堆的内存不足。在这种情况下, 只需要增加堆内存大小即可。
+需要注意: 有时候触发 GC overhead limit 错误的原因, 是因为分配给JVM的堆内存不足。这种情况下只需要增加堆内存大小即可。
 
 
 In many cases however, providing more Java heap space will not solve the problem. For example, if your application contains a memory leak, adding more heap will just postpone the _java.lang.OutOfMemoryError: Java heap space_ error. Additionally, increasing the amount of Java heap space also tends to increase the length of [GC pauses](https://plumbr.eu/handbook/gc-tuning/gc-tuning-in-practice/tuning-for-throughput) affecting your application’s [throughput or latency](https://plumbr.eu/handbook/gc-tuning/throughput-vs-latency-vs-capacity).
 
-在大多数情况下, 增加堆内存空间并不能解决问题。比如存在内存泄漏, 增加堆内存只会推迟 _java.lang.OutOfMemoryError: Java heap space_ 错误的触发时间。
+在大多数情况下, 增加堆内存并不能解决问题。例如程序中存在内存泄漏, 增加堆内存只能推迟产生 _java.lang.OutOfMemoryError: Java heap space_ 错误的时间。
 
-当然, 增大堆内存, 可能会增加 [GC pauses](http://blog.csdn.net/renfufei/article/details/55102729#t6) 的时间, 从而影响程序的 [吞吐量或延迟](http://blog.csdn.net/renfufei/article/details/55102729#t7)。
+当然, 增大堆内存, 还有可能会增加 [GC pauses](http://blog.csdn.net/renfufei/article/details/55102729#t6) 的时间, 从而影响程序的 [吞吐量或延迟](http://blog.csdn.net/renfufei/article/details/55102729#t7)。
 
 
 If you wish to solve the underlying problem with the Java heap space instead of masking the symptoms, you need to figure out which part of your code is responsible for allocating the most memory. In other words, you need to answer these questions:
 
-如果想从根本上解决问题, 则需要排查分配内存的代码. 简单来说, 需要解决这些问题:
+如果想从根本上解决问题, 则需要排查内存分配相关的代码. 简单来说, 需要回答以下问题:
 
 
 1.  Which objects occupy large portions of heap
@@ -193,27 +193,27 @@ At this point, make sure to clear a couple of days in your calendar (or – see 
 
 *   Get clearance for acquiring a heap dump from your JVM-to-troubleshoot. “Dumps” are basically snapshots of heap contents that you can analyze, and contain everything that the application kept in memory at the time of the dump. Including passwords, credit card numbers etc.
 
-* 获得在生产服务器上执行堆转储(heap dump)的权限。“转储”(Dump)是堆内存的快照, 稍后可以用于内存分析. 这些快照中可能含有机密信息, 例如密码、信用卡账号等, 所以有时候, 由于企业的安全限制, 要获得生产环境的堆转储并不容易。
+* 获得在生产服务器上执行堆转储(heap dump)的权限。“转储”(Dump)是堆内存的快照, 可用于后续的内存分析. 这些快照中可能含有机密信息, 例如密码、信用卡账号等, 所以有时候, 由于企业的安全限制, 要获得生产环境的堆转储并不容易。
 
 
 *   Instruct your JVM to dump the contents of its heap memory into a file. Be prepared to get a few dumps, as when taken at a wrong time, heap dumps contain a significant amount of  noise and can be practically useless. On the other hand, every heap dump “freezes” the JVM entirely, so don’t take too many of them or your end users start swearing.
 
-* 在适当的时间执行堆转储。一般来说,内存分析需要比对多个堆转储文件, 假如获取的时机不对, 那就可能是一个“废”的快照. 另外, 每次执行堆转储, 都会对JVM进行“冻结”, 所以生产环境中,也不能执行太多的Dump操作,否则系统缓慢或者卡死,你的麻烦就大了。
+* 在适当的时间执行堆转储。一般来说,内存分析需要比对多个堆转储文件, 假如获取的时机不对, 那就可能是一个“废”的快照. 另外, 每执行一次堆转储, 就会对JVM进行一次“冻结”, 所以生产环境中,不能执行太多的Dump操作,否则系统缓慢或者卡死,你的麻烦就大了。
 
 
 *   Find a machine that can load the dump. When your JVM-to-troubleshoot uses for example 8GB of heap, you need a machine with more than 8GB to be able to analyze heap contents. Fire up dump analysis software (we recommend [Eclipse MAT](http://www.eclipse.org/mat/), but there are also equally good alternatives available).
 
-* 用另一台机器来加载Dump文件。一般来说, 如果出问题的JVM内存是8GB, 那么分析 Heap Dump 的机器内存需要大于 8GB.  打开转储分析软件(我们推荐[Eclipse MAT](http://www.eclipse.org/mat/) , 当然你也可以使用其他工具)。
+* 用另一台机器来加载Dump文件。如果出问题的JVM内存是8GB, 那么分析 Heap Dump 的机器内存一般需要大于 8GB.  然后打开转储分析软件(我们推荐[Eclipse MAT](http://www.eclipse.org/mat/) , 当然你也可以使用其他工具)。
 
 
 *   Detect the paths to GC roots of the biggest consumers of heap. We have covered this activity in a separate post [here](https://plumbr.eu/blog/memory-leaks/solving-outofmemoryerror-dump-is-not-a-waste). Don’t worry, it will feel cumbersome at first, but you’ll get better after spending a few days digging.
 
-* 检测快照中占用内存最大的 GC roots。详情请参考: [Solving OutOfMemoryError (part 6) – Dump is not a waste](https://plumbr.eu/blog/memory-leaks/solving-outofmemoryerror-dump-is-not-a-waste)。 这对新手来说可能有点困难, 但这也会加深你对堆内存结构以及navigation机制的理解。
+* 检测快照中占用内存最大的 GC roots。详情请参考: [Solving OutOfMemoryError (part 6) – Dump is not a waste](https://plumbr.eu/blog/memory-leaks/solving-outofmemoryerror-dump-is-not-a-waste)。 这对新手来说可能有点困难, 但这也会加深你对堆内存结构以及 navigation 机制的理解。
 
 
 *   Next, you need to figure out where in your source code the potentially hazardous large amount of objects is being allocated. If you have good knowledge of your application’s source code you’ll hopefully be able to do this in a couple searches. When you have less luck, you will need some energy drinks to assist.
 
-* 接下来, 找出可能会分配大量对象的代码. 如果对整个系统非常熟悉, 可能很快就能定位了。
+* 接下来, 找出可能会分配大量对象的代码. 如果对整个系统非常熟悉, 可能很快就能定位问题。运气不好的话，就只有加班加点来进行排查了。
 
 Alternatively, we suggest [Plumbr, the only Java monitoring solution with automatic root cause detection](http://plumbr.eu). Among other performance problems it catches all _java.lang.OutOfMemoryError_s and automatically hands you the information about the most memory-hungry data structres. It takes care of gathering the necessary data behind the scenes – this includes the relevant data about heap usage (only the object layout graph, no actual data), and also some data that you can’t even find in a heap dump. It also does the necessary data processing for you – on the fly, as soon as the JVM encounters an _java.lang.OutOfMemoryError_. Here is an example _java.lang.OutOfMemoryError_ incident alert from Plumbr:
 
@@ -262,7 +262,7 @@ java -Xmx1024m com.yourcompany.YourClass`
 
 In the above example the Java process is given 1GB of heap. Modify the value as best fits to your JVM. However, if the result is that your JVM still dies with OutOfMemoryError, you might still not be able to avoid the manual or Plumbr-assisted analysis described above.
 
-这里配置Java堆内存最大为 `1GB`。请根据具体情况修改这个值. 如果 JVM 还是会抛出 OutOfMemoryError, 那么你可能还需要查询手册, 或者借助工具再次进行诊断分析。
+这里配置了最大堆内存为 `1GB`。请根据实际情况修改这个值. 如果 JVM 还是会抛出 OutOfMemoryError, 那么你可能还需要查询手册, 或者借助工具再次进行分析和诊断。
 
 
 原文链接: <https://plumbr.eu/outofmemoryerror/gc-overhead-limit-exceeded>
