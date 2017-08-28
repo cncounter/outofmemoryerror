@@ -4,7 +4,7 @@
 
 Java applications are only allowed to use a limited amount of memory. This limit is specified during application startup. To make things more complex, Java memory is separated into two different regions. These regions are called Heap space and Permgen (for Permanent Generation):
 
-每个Java程序都只能使用一定量的内存, 这种限制是由JVM的启动参数决定的。而更复杂的情况在于, Java程序的内存分为两部分: 堆内存(Heap space)和 永久代(Permanent Generation, 简称 Permgen):
+每个Java程序都只能使用一定量的内存, 这种限制是由JVM的启动参数决定的。而更复杂的情况在于, Java程序的内存分为两部分: 堆内存(Heap space)和 永久代(Permanent Generation, 简称 Permgen),如下图所示:
 
 
 ![](01_01_java-heap-space.png)
@@ -12,7 +12,7 @@ Java applications are only allowed to use a limited amount of memory. This limit
 
 The size of those regions is set during the Java Virtual Machine (JVM) launch and can be customized by specifying JVM parameters _-Xmx_ and _-XX:MaxPermSize_. If you do not explicitly set the sizes, platform-specific defaults will be used.
 
-这两个区域的最大内存大小, 由JVM启动参数 `-Xmx` 和 `-XX:MaxPermSize` 指定. 如果没有明确指定, 则根据操作系统类型和物理内存的大小来确定。
+这两块内存区域的最大尺寸, 由JVM启动参数 `-Xmx` 和 `-XX:MaxPermSize` 指定. 如果没有明确指定, 则根据操作系统类型和物理内存的大小来确定。
 
 The _java.lang.OutOfMemoryError: Java heap space_ error will be triggered when the application **attempts to add more data into the heap space area, but there is not enough room for it**.
 
@@ -314,12 +314,12 @@ If you wish to solve the underlying problem with the Java heap space instead of 
 
 1.  Which objects occupy large portions of heap
 
-1. 哪类对象占用了最多内存？
+2.  哪类对象占用了最多内存？
 
 
 2.  where these objects are being allocated in source code
 
-2. 这些对象是在哪部分代码中分配的。
+3.  这些对象是在哪部分代码中分配的。
 
 
 
@@ -335,22 +335,22 @@ At this point, make sure to clear a couple of days in your calendar (or – see 
 
 *   Get the dump at the right moment. Be prepared to get a few dumps, as when taken at a wrong time, heap dumps contain a significant amount of  noise and can be practically useless. On the other hand, every heap dump “freezes” the JVM entirely, so don’t take too many of them or your end users start facing performance issues.
 
-* 在适当的时间执行堆转储。一般来说,内存分析需要比对多个堆转储文件, 假如获取的时机不对, 那就可能是一个“废”的快照. 另外, 每次执行堆转储, 都会对JVM进行“冻结”, 所以生产环境中,也不能执行太多的Dump操作,否则系统缓慢或者卡死,你的麻烦就大了。
+*   在适当的时间执行堆转储。一般来说,内存分析需要比对多个堆转储文件, 假如获取的时机不对, 那就可能是一个“废”的快照. 另外, 每次执行堆转储, 都会对JVM进行“冻结”, 所以生产环境中,也不能执行太多的Dump操作,否则系统缓慢或者卡死,你的麻烦就大了。
 
 
 *   Find a machine that can load the dump. When your JVM-to-troubleshoot uses for example 8GB of heap, you need a machine with more than 8GB to be able to analyze heap contents. Fire up dump analysis software (we recommend [Eclipse MAT](http://www.eclipse.org/mat/), but there are also equally good alternatives available).
 
-* 用另一台机器来加载Dump文件。一般来说, 如果出问题的JVM内存是8GB, 那么分析 Heap Dump 的机器内存需要大于 8GB.  打开转储分析软件(我们推荐[Eclipse MAT](http://www.eclipse.org/mat/) , 当然你也可以使用其他工具)。
+*   用另一台机器来加载Dump文件。一般来说, 如果出问题的JVM内存是8GB, 那么分析 Heap Dump 的机器内存需要大于 8GB.  打开转储分析软件(我们推荐[Eclipse MAT](http://www.eclipse.org/mat/) , 当然你也可以使用其他工具)。
 
 
 *   Detect the paths to GC roots of the biggest consumers of heap. We have covered this activity in a separate post [here](https://plumbr.eu/blog/memory-leaks/solving-outofmemoryerror-dump-is-not-a-waste). It is especially tough for beginners, but the practice will make you understand the structure and navigation mechanics.
 
-* 检测快照中占用内存最大的 GC roots。详情请参考: [Solving OutOfMemoryError (part 6) – Dump is not a waste](https://plumbr.eu/blog/memory-leaks/solving-outofmemoryerror-dump-is-not-a-waste)。 这对新手来说可能有点困难, 但这也会加深你对堆内存结构以及navigation机制的理解。
+*   检测快照中占用内存最大的 GC roots。详情请参考: [Solving OutOfMemoryError (part 6) – Dump is not a waste](https://plumbr.eu/blog/memory-leaks/solving-outofmemoryerror-dump-is-not-a-waste)。 这对新手来说可能有点困难, 但这也会加深你对堆内存结构以及navigation机制的理解。
 
 
 *   Next, you need to figure out where in your source code the potentially hazardous large amount of objects is being allocated. If you have good knowledge of your application’s source code you’ll be able to do this in a couple searches.
 
-* 接下来, 找出可能会分配大量对象的代码. 如果对整个系统非常熟悉, 可能很快就能定位了。
+*   接下来, 找出可能会分配大量对象的代码. 如果对整个系统非常熟悉, 可能很快就能定位了。
 
 
 Alternatively, we suggest [Plumbr, the only Java monitoring solution with automatic root cause detection](http://plumbr.eu). Among other performance problems it catches all _java.lang.OutOfMemoryError_s and automatically hands you the information about the most memory-hungry data structres. 
@@ -373,17 +373,17 @@ Without any additional tooling or analysis you can see:
 
 *   Which objects are consuming the most memory (271 _com.example.map.impl.PartitionContainer_ instances consume 173MB out of 248MB total heap)
 
-* 哪类对象占用了最多的内存(此处是 271 个 _com.example.map.impl.PartitionContainer_ 实例, 消耗了 173MB 内存, 而堆内存只有 248MB)
+*   哪类对象占用了最多的内存(此处是 271 个 _com.example.map.impl.PartitionContainer_ 实例, 消耗了 173MB 内存, 而堆内存只有 248MB)
 
 
 *   Where these objects were allocated (most of them allocated in the _MetricManagerImpl_ class, line 304)
 
-* 这些对象在何处创建(大部分是在 _MetricManagerImpl_ 类中,第304行处)
+*   这些对象在何处创建(大部分是在 _MetricManagerImpl_ 类中,第304行处)
 
 
 *   What is currently referencing these objects (the full reference chain up to GC root)
 
-* 当前是谁在引用这些对象(从 GC root 开始的完整引用链)
+*   当前是谁在引用这些对象(从 GC root 开始的完整引用链)
 
 
 Equipped with this information you can zoom in to the underlying root cause and make sure the data structures are trimmed down to the levels where they would fit nicely into your memory pools.
