@@ -1,19 +1,27 @@
-# java.lang.OutOfMemoryError:
-**Permgen space**
+# java.lang.OutOfMemoryError: **Permgen space**
+
+# OutOfMemoryError系列（3）: Permgen space
 
 Java applications are only allowed to use a limited amount of memory. The exact amount of memory your particular application can use is specified during application startup. To make things more complex, Java memory is separated into different regions which can be seen in the following figure:
 
+每个Java程序都只能使用一定量的内存, 这种限制是由JVM的启动参数决定的。而更复杂的情况在于, Java程序的内存分为两部分: 堆内存(Heap space)和 永久代(Permanent Generation, 简称 Permgen),如下图所示:
 
 
-![java.lang.outofmemoryerror: Permgen space](https://plumbr.eu/wp-content/uploads/2014/04/java.lang_.outofmemoryerror-permgen-space.png)
+![java.lang.outofmemoryerror: Permgen space](03_01_java.lang_.outofmemoryerror-permgen-space.png)
 
 
 
 The size of all those regions, including the permgen area, is set during the JVM launch. If you do not set the sizes yourself, platform-specific defaults will be used.
 
+这些内存区域的最大尺寸, 由JVM启动参数 -Xmx 和 -XX:MaxPermSize 指定. 如果没有明确指定, 则根据操作系统类型和物理内存的大小来确定。
+
 The _java.lang.OutOfMemoryError: PermGen space_ message indicates that the **Permanent Generation’s area in memory is exhausted**.
 
+_java.lang.OutOfMemoryError: PermGen space_ 错误信息所表达的意思是: **永久代(Permanent Generation) 部分的内存区域已经被耗尽了。** 
+
 ## What is causing it?
+
+## 原因分析
 
 To understand the cause for the _java.lang.OutOfMemoryError: PermGen space_, we would need to understand what this specific memory area is used for.
 
