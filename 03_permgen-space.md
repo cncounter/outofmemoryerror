@@ -81,19 +81,35 @@ Launching the code above will keep generating new classes and loading their defi
 
 ### Redeploy-time example
 
+### Redeploy-time 示例
+
 For a bit more complex and more realistic example, lets walk you through a _java.lang.OutOfMemoryError: Permgen space_ error occurring during the application redeploy. When you redeploy an application, you would expect that [Garbage Collection](https://plumbr.eu/handbook/garbage-collection-algorithms-implementations) will get rid of the previous classloader referencing all the previously loaded classes and it gets replaced with a classloader loading new versions of the classes.
+
+下面是一个更实际的示例, 让我们来看看重新部署应用时引起的 _java.lang.OutOfMemoryError: Permgen space_ 错误. 您可能会认为, 在重新部署应用时, [垃圾收集器](http://blog.csdn.net/renfufei/article/details/54885190) 会将之前装载所有class 的 classloader 抛弃, 用一个新的 classloader 来加载新的 class。
 
 Unfortunately many 3rd party libraries and poor handling of resources such as threads, JDBC drivers or filesystem handles makes unloading the previously used classloader impossible. This in turn means that **during each redeploy all the previous versions of your classes will still reside in PermGen generating tens of megabytes of garbage during each redeploy**.
 
+但实际情况并不是这样, 很多第三方库, 以及某些受限的资源, 如 threads, JDBC驱动程序, 或文件系统句柄(handles), 都会导致不能卸载之前的 classloader . 这也就是说, 在 redeploy 的过程中, 之前版本的class仍然驻留在PermGen, 每次重新部署都会产生几十MB，甚至上百MB的垃圾**。
+
 Let’s imagine an example application that connects to a relational database using JDBC drivers. When the application is started, the initializing code loads the JDBC driver to connect to the database. Corresponding to the specification, the JDBC driver registers itself with _java.sql.DriverManager_. This registration includes storing a reference to an instance of the driver inside a static field of _DriverManager_.
+
+让我们想象一下, 在某个应用中, 通过JDBC来连接数据库。当应用程序启动时,初始化代码加载JDBC驱动程序来连接数据库. 根据规范, JDBC驱动会将自身注册到 _java.sql.DriverManager_, 实质上是将自身的一个实例添加到 _DriverManager_ 的一个 static 属性中。
 
 Now, when the application is undeployed from the application server, _java.sql.DriverManager_ will still hold that reference. We end up having a live reference to the driver class which in turn holds reference to the instance of _java.lang.Classloader_ used to load the application. This in turn means that the [Garbage Collection Algorithms](https://plumbr.eu/handbook/garbage-collection-algorithms-implementations) are not able to reclaim the space.
 
+那么, 当application从应用程序服务器undeployed时, _java.sql.DriverManager_ 仍然会持有JDBC驱动实例(Tomcat会经常警告这种事情). 同样的, JDBC驱动实例又持有者 _java.lang.Classloader_ 实例, 那 [垃圾收集器](http://blog.csdn.net/renfufei/article/details/54885190) 同样没办法回收相应的内存空间。
+
 And that instance of **_java.lang.ClassLoader_ still references all classes of the application, usually occupying tens of megabytes in PermGen**. Which means that it would take just a handful of redeploys to fill a typically sized PermGen and get the _java.lang.OutOfMemoryError: PermGen space_ error message in your logs.
+
+所以呢, 之前的 _java.lang.ClassLoader_ 实例依然引用着所有的 classes, 通常是几十MB的内存。这意味着 redeploy 只能继续占用一块差不多大的 PermGen 空间, 多次以后, 就会造成 _java.lang.OutOfMemoryError: PermGen space_ 错误, 你可能在日志文件中看到这些错误信息。
+
+
 
 
 
 ## What is the solution?
+
+## 解决方案
 
 ### **1.** Solving initialization-time OutOfMemoryError
 
@@ -146,3 +162,7 @@ jmap -dump:file=dump.hprof,format=b <process-id>
 Then opening the dump with your favorite heap dump analyzer (e.g. Eclipse MAT) and progressing to find the most expensive classloaders by the number of classes loaded. From such classloaders, you can proceed to extract the loaded classes and sort such classes by the instances to have the top list of suspects.
 
 For each suspect, you then need to manually trace the root cause back to your application code that generates such classes.
+
+
+原文链接: <https://plumbr.eu/outofmemoryerror/permgen-space>
+
