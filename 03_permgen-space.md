@@ -2,6 +2,8 @@
 
 # OutOfMemoryError系列（3）: Permgen space
 
+> **说明:** 本文适用于JDK1.7及之前的版本; Java8及之后取消了 Permgen, 改用限制更少的 MetaSpace, 请参考: [跟OOM：Permgen说再见吧](http://www.importnew.com/14933.html)。
+
 Java applications are only allowed to use a limited amount of memory. The exact amount of memory your particular application can use is specified during application startup. To make things more complex, Java memory is separated into different regions which can be seen in the following figure:
 
 每个Java程序都只能使用一定量的内存, 这种限制是由JVM的启动参数决定的。而更复杂的情况在于, Java程序的内存分为两部分: 堆内存(Heap space)和 永久代(Permanent Generation, 简称 Permgen),如下图所示:
@@ -25,7 +27,7 @@ _java.lang.OutOfMemoryError: PermGen space_ 错误信息所表达的意思是: *
 
 To understand the cause for the _java.lang.OutOfMemoryError: PermGen space_, we would need to understand what this specific memory area is used for.
 
-首先我们需要了解一下内存区域 **PermGen** 是用来做什么的。
+首先我们需要了解 **PermGen** 内存区域是用来做什么的。
 
 For practical purposes, the permanent generation consists mostly of class declarations loaded and stored into PermGen. This includes the name and fields of the class, methods with the method bytecode, constant pool information, object arrays and type arrays associated with a class and Just In Time compiler optimizations.
 
@@ -43,7 +45,13 @@ From the above definition you can deduce that the PermGen size requirements depe
 
 ### Minimalistic example
 
+### 最简单的例子
+
 As we described above, PermGen space usage is strongly correlated with the number of classes loaded into the JVM. The following code serves as the most straightforward example:
+
+正如我们上面所说的, PermGen 空间的使用量, 与加载到JVM中的 class 数量有很大关系。下面的代码是最直观的例子:
+
+
 
 ```
 import javassist.ClassPool;
@@ -64,7 +72,12 @@ public class MicroGenerator {
 
 In this example the source code iterates over a loop and generates classes at runtime. Class generation complexity is being taken care of by the [javassist](http://www.csg.ci.i.u-tokyo.ac.jp/~chiba/javassist/) library.
 
+以上代码在执行的过程中, 通过循环, 动态地生成很多空类。通过 [javassist](http://www.csg.ci.i.u-tokyo.ac.jp/~chiba/javassist/) 库, 生成 class 变得非常简单。
+
 Launching the code above will keep generating new classes and loading their definitions into Permgen space until the space is fully utilized and the _java.lang.OutOfMemoryError: Permgen space_ is thrown.
+
+执行上面的代码， 将生成很多新的 class 并将 class 定义加载到Permgen空间, 直到占满, 并抛出 _java.lang.OutOfMemoryError: Permgen space_ 错误。
+
 
 ### Redeploy-time example
 
