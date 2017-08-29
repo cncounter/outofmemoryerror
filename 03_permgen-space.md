@@ -72,11 +72,11 @@ public class MicroGenerator {
 
 In this example the source code iterates over a loop and generates classes at runtime. Class generation complexity is being taken care of by the [javassist](http://www.csg.ci.i.u-tokyo.ac.jp/~chiba/javassist/) library.
 
-以上代码在执行的过程中, 通过循环, 动态地生成很多空类。通过 [javassist](http://www.csg.ci.i.u-tokyo.ac.jp/~chiba/javassist/) 库, 生成 class 变得非常简单。
+这段代码在执行的过程中, 通过循环, 动态地生成很多空类。通过 [javassist](http://www.csg.ci.i.u-tokyo.ac.jp/~chiba/javassist/) 库, 生成 class 变得非常简单。
 
 Launching the code above will keep generating new classes and loading their definitions into Permgen space until the space is fully utilized and the _java.lang.OutOfMemoryError: Permgen space_ is thrown.
 
-执行上面的代码， 将生成很多新的 class 并将 class 定义加载到Permgen空间, 直到占满, 并抛出 _java.lang.OutOfMemoryError: Permgen space_ 错误。
+执行上面的代码， 将生成很多新的 class 并加载到Permgen空间, 随后占满Permgen空间, 就会抛出 _java.lang.OutOfMemoryError: Permgen space_ 错误, 当然, 我们上一节也说过, 有可能会抛出其他类型的 OutOfMemoryError。
 
 
 ### Redeploy-time example
