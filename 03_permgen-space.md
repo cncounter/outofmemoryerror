@@ -167,30 +167,52 @@ For the inactive classloaders, you need to determine the reference blocking them
 
 ### **3.** Solving run-time OutOfMemoryError
 
+### * * 3。* *解决运行时OutOfMemoryError
+
 _When the application runs out of PermGen memory during runtime, the [Plumbr](/) dynamic leak detection capability is the best way to find the source for the leakage. Grab the [free 14-day trial](#) and get rid of the issue._
 
+_When PermGen内存的应用程序运行期间运行时,[Plumbr](/)动态泄漏检测能力的最好方法是寻找泄漏源.抓住(14天的免费试用)(#)和摆脱issue._
+
 An alternative way for those once again who cannot use Plumbr is also available. First step in such case is to check whether the [GC is allowed to unload classes from PermGen](https://plumbr.eu/handbook/garbage-collection-in-jvm/memory-pools/permgen). The standard JVM is rather conservative in this regard – classes are born to live forever. So once loaded, classes stay in memory even if no code is using them anymore. This can become a problem when the application creates lots of classes dynamically and the generated classes are not needed for longer periods. In such a case, allowing the JVM to unload class definitions can be helpful. This can be achieved by adding just one configuration parameter to your startup scripts:
+
+另一种方式对于那些不能使用Plumbr也再次可用。这种情况下的第一步是检查是否从PermGen][GC可以卸载类(https://plumbr.欧盟/手册/ garbage-collection-in-jvm /内存池/ permgen)。标准JVM在这方面是相当保守类生永远活着.所以一旦加载,类在内存即使没有代码使用它们了.这可以成为一个问题时,应用程序创建大量的动态类和生成的类不需要更长时间.在这种情况下,允许JVM卸载类定义可以有帮助。这可以通过一个配置参数添加到启动脚本:
 
 ```
 -XX:+CMSClassUnloadingEnabled
 ```
 
+
+
 By default this is set to false and so to enable this you need to explicitly set the following option in Java options. If you enable _CMSClassUnloadingEnabled_, [GC will sweep](https://plumbr.eu/handbook/garbage-collection-algorithms/removing-unused-objects/sweep) PermGen too and remove classes which are no longer used. Keep in mind that this option will work only when _UseConcMarkSweepGC_ is also enabled using the below option. So when running [ParallelGC](https://plumbr.eu/handbook/garbage-collection-algorithms-implementations/parallel-gc) or, God forbid, [Serial GC](https://plumbr.eu/handbook/garbage-collection-algorithms-implementations/serial-gc), make sure you have set your GC to [CMS](https://plumbr.eu/handbook/garbage-collection-algorithms-implementations/concurrent-mark-and-sweep) by specifying:
+
+默认设置为false,这需要显式启用Java选项设置以下选项。如果你启用_CMSClassUnloadingEnabled_,GC将扫描(https://plumbr.欧盟/手册/垃圾收集算法/ removing-unused-objects /扫描)PermGen和删除不再使用的类.记住,这个选项将只有当_UseConcMarkSweepGC_也使用以下选项启用。所以,当运行[ParallelGC](https://plumbr.欧盟/手册/ garbage-collection-algorithms-implementations / parallel-gc)或者,上帝保佑,串行GC(https://plumbr.欧盟/手册/ garbage-collection-algorithms-implementations / serial-gc),确保你设置你的GC(CMS)(https://plumbr.欧盟/手册/ garbage-collection-algorithms-implementations / concurrent-mark-and-sweep)通过指定:
 
 ```
 -XX:+UseConcMarkSweepGC
 ```
 
+
+
 After making sure classes can be unloaded and the issue still persists, you should proceed with heap dump analysis – taking the heap dump with a command similar to following:
+
+确保类可以卸载后,这个问题仍然存在,你应该继续堆转储分析——以堆转储命令类似于:
 
 ```
 jmap -dump:file=dump.hprof,format=b <process-id> 
 
 ```
 
+
+
 Then opening the dump with your favorite heap dump analyzer (e.g. Eclipse MAT) and progressing to find the most expensive classloaders by the number of classes loaded. From such classloaders, you can proceed to extract the loaded classes and sort such classes by the instances to have the top list of suspects.
 
+然后打开转储你最喜欢堆转储分析仪(例如Eclipse垫)和进步最昂贵的类装载器装载的类的数量.从这样的类加载器,您可以继续提取加载的类,这样的类的实例列表顶部的嫌疑犯。
+
 For each suspect, you then need to manually trace the root cause back to your application code that generates such classes.
+
+对于每一个怀疑,然后您需要手动跟踪问题的根源回到您的应用程序代码,生成这些类。
+
+
 
 链接: [跟OOM：Permgen说再见吧](http://www.importnew.com/14933.html)
 
