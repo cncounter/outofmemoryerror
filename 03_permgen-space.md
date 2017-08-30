@@ -2,7 +2,7 @@
 
 # OutOfMemoryError系列（3）: Permgen space
 
-> **说明:** 本文适用于JDK1.7及之前的版本; Java8及之后取消了 Permgen, 改用限制更少的 MetaSpace, 请参考: [跟OOM：Permgen说再见吧](http://www.importnew.com/14933.html)。
+> **说明:** 本文适用于JDK1.7及之前的版本; Java8及之后取消了 Permgen, 改用限制更少的 MetaSpace, 请参考下一篇文章。
 
 Java applications are only allowed to use a limited amount of memory. The exact amount of memory your particular application can use is specified during application startup. To make things more complex, Java memory is separated into different regions which can be seen in the following figure:
 
@@ -45,7 +45,7 @@ From the above definition you can deduce that the PermGen size requirements depe
 
 ### Minimalistic example
 
-### 最简单的例子
+### 简单示例
 
 As we described above, PermGen space usage is strongly correlated with the number of classes loaded into the JVM. The following code serves as the most straightforward example:
 
@@ -68,6 +68,7 @@ public class MicroGenerator {
     return pool.makeClass(name).toClass();
   }
 }
+
 ```
 
 In this example the source code iterates over a loop and generates classes at runtime. Class generation complexity is being taken care of by the [javassist](http://www.csg.ci.i.u-tokyo.ac.jp/~chiba/javassist/) library.
@@ -81,7 +82,7 @@ Launching the code above will keep generating new classes and loading their defi
 
 ### Redeploy-time example
 
-### Redeploy-time 示例
+### Redeploy时产生的 OutOfMemoryError
 
 For a bit more complex and more realistic example, lets walk you through a _java.lang.OutOfMemoryError: Permgen space_ error occurring during the application redeploy. When you redeploy an application, you would expect that [Garbage Collection](https://plumbr.eu/handbook/garbage-collection-algorithms-implementations) will get rid of the previous classloader referencing all the previously loaded classes and it gets replaced with a classloader loading new versions of the classes.
 
@@ -113,28 +114,56 @@ And that instance of **_java.lang.ClassLoader_ still references all classes of t
 
 ### **1.** Solving initialization-time OutOfMemoryError
 
+### **1.** 解决初始化时产生的 OutOfMemoryError
+
 When the OutOfMemoryError due to PermGen exhaustion is triggered during the application launch, the solution is simple. The application just needs more room to load all the classes to the PermGen area so we just need to increase its size. To do so, alter your application launch configuration and add (or increase if present) the _-XX:MaxPermSize_ parameter similar to the following example:
+
+如果在程序启动时, 因为PermGen耗尽而产生 OutOfMemoryError 错误, 解决方法很简单. 那就是需要更多的内存空间来加载应用程序的 class, 增加 PermGen 的大小即可. 使用  _-XX:MaxPermSize_  启动参数, 类似下面的例子:
 
 ```
 java -XX:MaxPermSize=512m com.yourcompany.YourClass
+
 ```
+
+
 
 The above configuration will tell the JVM that PermGen is allowed to grow up to 512MB before it can start complaining in the form of OutOfMemoryError.
 
+这个配置允许JVM使用的 PermGen 最大为512MB, 如果还不够, 就会抛出 OutOfMemoryError。
+
+
+
 ### **2.** Solving redeploy-time OutOfMemoryError
+
+### **2.** 解决redeploy时产生的 OutOfMemoryError
 
 _When the OutOfMemoryError occurs right after you redeploy the application, your application suffers from classloader leakage. In such a case, the easiest and most straightforward way to solve the problem is to grab a [14-day free trial](#) of [Plumbr](/), find the offending code and solve it in minutes._
 
+> **广告**: 如果在程序 redeploy 时产生 OutOfMemoryError 错误, 那很可能是因为 classloader 泄露, 这时最简单的工具是使用 [Plumbr](https://plumbr.eu/) 工具, 几分钟就能找出问题代码; 这款Agent工具可以免费试用14天。
+
+
 For those who cannot use Plumbr or decide not to, alternatives are also available. For this, you should proceed with heap dump analysis – take the heap dump after a redeploy with a command similar to this one:
 
-```
-jmap -dump:format=b,file=dump.hprof <process-id> 
+如果不喜欢/使用 Plumbr 也没问题. 这时候就需要进行堆转储分析(heap dump analysis) —— 在 redeploy 之后, 执行堆转储, 类似下面的命令:
+
 
 ```
+jmap -dump:format=b,file=dump.hprof <process-id>
+
+```
+
+
 
 Then open the dump with your favourite heap dump analyzer (Eclipse MAT is a good tool for that). In the analyzer, you can look for duplicate classes, especially those loading your application classes. From there, you need to progress to all classloaders to find the currently active classloader.
 
+然后通过你熟悉的堆转储分析器(如 Eclipse MAT)加载 heap dump。zai  分析器 中, 可以找到重复的类, 特别是加载 class 的那些类. 一般来说, 你需要对比所有的 classloader, 以找到当前使用的classloader(类加载器)。
+
+
 For the inactive classloaders, you need to determine the reference blocking them from being [Garbage Collected](https://plumbr.eu/handbook/garbage-collection-in-jvm) via harvesting the shortest path to [GC root](https://plumbr.eu/handbook/garbage-collection-algorithms/marking-reachable-objects) from the inactive classloaders. Equipped with this information you will have found the root cause. In case the root cause was in a 3rd party library, you can proceed to Google/StackOverflow to see if this is a known issue to get a patch/workaround. If this was your own code, you need to get rid of the offending reference.
+
+对于不使用的类加载器, 您需要确定是哪个最短路径的 [GC root](http://blog.csdn.net/renfufei/article/details/54407417#t0) 在阻止他们被 [垃圾收集](http://blog.csdn.net/renfufei/article/details/54144385) 回收. 了解这些信息之后, 就可以找到问题的根源. 如果是第三方库的原因, 那么可以通过 Google/StackOverflow 来查找解决方案. 如果是自己的代码问题, 则需要在适当的时机解除相关引用。
+
+
 
 ### **3.** Solving run-time OutOfMemoryError
 
@@ -163,6 +192,7 @@ Then opening the dump with your favorite heap dump analyzer (e.g. Eclipse MAT) a
 
 For each suspect, you then need to manually trace the root cause back to your application code that generates such classes.
 
+链接: [跟OOM：Permgen说再见吧](http://www.importnew.com/14933.html)
 
 原文链接: <https://plumbr.eu/outofmemoryerror/permgen-space>
 
