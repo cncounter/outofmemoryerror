@@ -1,11 +1,12 @@
-# java.lang.OutOfMemoryError:
-**Metaspace**
+# java.lang.OutOfMemoryError: **Metaspace**
+
+# OutOfMemoryError系列（4）: Metaspace
 
 Java applications are allowed to use only a limited amount of memory. The exact amount of memory your particular application can use is specified during application startup. To make things more complex, Java memory is separated into different regions, as seen in the following figure:
 
 
 
-![metaspace error](https://plumbr.eu/wp-content/uploads/2014/05/OOM-example-metaspace.png)
+![metaspace error](04_01_OOM-example-metaspace.png)
 
 
 

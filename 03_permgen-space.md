@@ -2,7 +2,7 @@
 
 # OutOfMemoryError系列（3）: Permgen space
 
-> **说明:** 本文适用于JDK1.7及之前的版本; Java8及之后取消了 Permgen, 改用限制更少的 MetaSpace, 请参考下一篇文章。
+> **说明:** Permgen属于 JDK1.7 及之前的版本; JDK8之后改用限制更少的 MetaSpace来代替, 请参考下一篇文章: [OutOfMemoryError系列（4）: Metaspace]()。
 
 Java applications are only allowed to use a limited amount of memory. The exact amount of memory your particular application can use is specified during application startup. To make things more complex, Java memory is separated into different regions which can be seen in the following figure:
 
