@@ -15,14 +15,14 @@ The many thousands of java.lang.OutOfMemoryErrors that I’ve met during my care
 
 
 
-1. [java.lang.OutOfMemoryError:**Java heap space**](https://plumbr.eu/outofmemoryerror/java-heap-space)
-2. [java.lang.OutOfMemoryError:**GC overhead limit exceeded**](https://plumbr.eu/outofmemoryerror/gc-overhead-limit-exceeded)
-3. [java.lang.OutOfMemoryError:**Permgen space**](https://plumbr.eu/outofmemoryerror/permgen-space)
-4. [java.lang.OutOfMemoryError:**Metaspace**](https://plumbr.eu/outofmemoryerror/metaspace)
-5. [java.lang.OutOfMemoryError:**Unable to create new native thread**](https://plumbr.eu/outofmemoryerror/unable-to-create-new-native-thread)
-6. [java.lang.OutOfMemoryError:**Out of swap space?** ](https://plumbr.eu/outofmemoryerror/out-of-swap-space)
-7. [java.lang.OutOfMemoryError:**Requested array size exceeds VM limit** Details](https://plumbr.eu/outofmemoryerror/requested-array-size-exceeds-vm-limit)
-8. [Out of memory:**Kill process or sacrifice child**](https://plumbr.eu/outofmemoryerror/kill-process-or-sacrifice-child)
+1. [java.lang.OutOfMemoryError:**Java heap space**](01_java-heap-space.md)
+2. [java.lang.OutOfMemoryError:**GC overhead limit exceeded**](02_gc-overhead-limit-exceeded.md)
+3. [java.lang.OutOfMemoryError:**Permgen space**](03_permgen-space.md)
+4. [java.lang.OutOfMemoryError:**Metaspace**](04_metaspace.md)
+5. [java.lang.OutOfMemoryError:**Unable to create new native thread**](05_unable-to-create-new-native-thread.md)
+6. [java.lang.OutOfMemoryError:**Out of swap space?** ](06_out-of-swap-space.md)
+7. [java.lang.OutOfMemoryError:**Requested array size exceeds VM limit** Details](07_requested-array-size-exceeds-vm-limit.md)
+8. [Out of memory:**Kill process or sacrifice child**](08_kill-process-or-sacrifice-child.md)
 
 
 
