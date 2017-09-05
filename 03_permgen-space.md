@@ -2,11 +2,11 @@
 
 # OutOfMemoryError系列（3）: Permgen space
 
-> **说明:** Permgen(永久代) 属于 JDK1.7 及之前版本的概念; 为了适应Java程序的发展, JDK8以后的版本采用限制更少的 MetaSpace 来代替, 详情请参考下一篇文章: [OutOfMemoryError系列（4）: Metaspace]()。
+> **说明:** Permgen(永久代) 属于 JDK1.7 及之前版本的概念; 为了适应Java程序的发展, JDK8以后的版本采用限制更少的 MetaSpace 来代替, 详情请参考下一篇文章: [OutOfMemoryError系列（4）: Metaspace](./04_metaspace.md)。
 
 Java applications are only allowed to use a limited amount of memory. The exact amount of memory your particular application can use is specified during application startup. To make things more complex, Java memory is separated into different regions which can be seen in the following figure:
 
-每个Java程序都只能使用一定量的内存, 这种限制是由JVM的启动参数决定的。而更复杂的情况在于, Java程序的内存分为两部分: 堆内存(Heap space)和 永久代(Permanent Generation, 简称 Permgen),如下图所示:
+每个Java程序都被限制了最大堆内存, 这种限制由JVM的启动参数决定。而且, Java将堆内存划分为多个区域, 如下图所示:
 
 
 ![java.lang.outofmemoryerror: Permgen space](03_01_java.lang_.outofmemoryerror-permgen-space.png)
@@ -15,11 +15,11 @@ Java applications are only allowed to use a limited amount of memory. The exact 
 
 The size of all those regions, including the permgen area, is set during the JVM launch. If you do not set the sizes yourself, platform-specific defaults will be used.
 
-这些内存区域的最大尺寸, 由JVM启动参数 -Xmx 和 -XX:MaxPermSize 指定. 如果没有明确指定, 则根据操作系统类型和物理内存的大小来确定。
+这些区域的最大值, 由JVM启动参数 `-Xmx` 和 `-XX:MaxPermSize` 指定. 如果没有明确指定, 则根据操作系统平台和物理内存的大小来确定。
 
 The _java.lang.OutOfMemoryError: PermGen space_ message indicates that the **Permanent Generation’s area in memory is exhausted**.
 
-_java.lang.OutOfMemoryError: PermGen space_ 错误信息所表达的意思是: **永久代(Permanent Generation) 部分的内存区域已经被耗尽了。** 
+_java.lang.OutOfMemoryError: PermGen space_ 错误信息所表达的意思是: **永久代(Permanent Generation) 内存区域已满** 
 
 ## What is causing it?
 
@@ -27,7 +27,7 @@ _java.lang.OutOfMemoryError: PermGen space_ 错误信息所表达的意思是: *
 
 To understand the cause for the _java.lang.OutOfMemoryError: PermGen space_, we would need to understand what this specific memory area is used for.
 
-首先我们需要了解 **PermGen** 内存区域是用来做什么的。
+要了解 _java.lang.OutOfMemoryError: PermGen space_ 产生的原因, 我们先来看看 **PermGen** 内存区域是用来干什么的。
 
 For practical purposes, the permanent generation consists mostly of class declarations loaded and stored into PermGen. This includes the name and fields of the class, methods with the method bytecode, constant pool information, object arrays and type arrays associated with a class and Just In Time compiler optimizations.
 
