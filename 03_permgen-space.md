@@ -144,7 +144,7 @@ The above configuration will tell the JVM that PermGen is allowed to grow up to 
 
 For those who cannot use Plumbr or decide not to, alternatives are also available. For this, you should proceed with heap dump analysis – take the heap dump after a redeploy with a command similar to this one:
 
-我们可以进行堆转储分析(heap dump analysis) —— 在 redeploy 之后, 执行堆转储, 类似下面的命令:
+我们可以进行堆转储分析(heap dump analysis) —— 在 redeploy 之后, 执行堆转储, 类似下面这样:
 
 
 ```
@@ -156,14 +156,17 @@ jmap -dump:format=b,file=dump.hprof <process-id>
 
 Then open the dump with your favourite heap dump analyzer (Eclipse MAT is a good tool for that). In the analyzer, you can look for duplicate classes, especially those loading your application classes. From there, you need to progress to all classloaders to find the currently active classloader.
 
-然后通过堆转储分析器(如强悍的 Eclipse MAT)加载 heap dump。通过分析器找到重复的类, 特别是加载 class 的那些类. 一般来说, 你需要对比所有的 classloader, 以找到当前使用的classloader(类加载器)。
+然后通过堆转储分析器(如强悍的 Eclipse MAT)加载 dump 得到的文件。找出重复的类, 特别是类加载器(classloader)对应的 class. 你可能需要比对所有的 classloader, 来找出当前正在使用的那个。
 
-> Eclipse MAT 在各个平台都有独立安装包.  大约50MB左右, 通过官网下载即可。
+
+
+> Eclipse MAT 在各个平台都有独立安装包.  大约50MB左右,  官网下载地址: <http://www.eclipse.org/mat/downloads.php>
+
 
 
 For the inactive classloaders, you need to determine the reference blocking them from being [Garbage Collected](https://plumbr.eu/handbook/garbage-collection-in-jvm) via harvesting the shortest path to [GC root](https://plumbr.eu/handbook/garbage-collection-algorithms/marking-reachable-objects) from the inactive classloaders. Equipped with this information you will have found the root cause. In case the root cause was in a 3rd party library, you can proceed to Google/StackOverflow to see if this is a known issue to get a patch/workaround. If this was your own code, you need to get rid of the offending reference.
 
-对于不使用的 classloader, 您需要确定是哪个最短路径的 [GC root](http://blog.csdn.net/renfufei/article/details/54407417#t0) 在阻止他们被 [垃圾收集](http://blog.csdn.net/renfufei/article/details/54144385) 回收. 了解这些信息之后, 就可以找到问题的根源. 如果是第三方库的原因, 那么可以通过 Google/StackOverflow 来查找解决方案. 如果是自己的代码问题, 则需要在适当的时机解除相关引用。
+对于不使用的类加载器(inactive classloader), 需要先确定最短路径的 [GC root](http://blog.csdn.net/renfufei/article/details/54407417#t0) , 看看是哪一个阻止其被 [垃圾收集器](http://blog.csdn.net/renfufei/article/details/54144385) 所回收. 这样才能找到问题的根源. 如果是第三方库的原因, 那么可以搜索 Google/StackOverflow 来查找解决方案. 如果是自己的代码问题, 则需要在恰当的时机来解除相关引用。
 
 
 
