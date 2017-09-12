@@ -4,7 +4,7 @@
 
 Java applications are only allowed to use a limited amount of memory. This limit is specified during application startup. To make things more complex, Java memory is separated into two different regions. These regions are called Heap space and Permgen (for Permanent Generation):
 
-每个Java程序都只能使用一定量的内存, 这种限制是由JVM的启动参数决定的。而更复杂的情况在于, Java程序的内存分为两部分: 堆内存(Heap space)和 永久代(Permanent Generation, 简称 Permgen),如下图所示:
+JVM限制了Java程序的最大内存使用量, 由JVM的启动参数决定。而Java程序的内存被划分为两大部分: 堆内存(Heap space)和 永久代(Permanent Generation, 简称 Permgen),如下图所示:
 
 
 ![](01_01_java-heap-space.png)
