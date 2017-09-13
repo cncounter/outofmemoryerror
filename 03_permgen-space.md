@@ -27,15 +27,15 @@ _java.lang.OutOfMemoryError: PermGen space_ 错误信息所表达的意思是: *
 
 To understand the cause for the _java.lang.OutOfMemoryError: PermGen space_, we would need to understand what this specific memory area is used for.
 
-要了解 _java.lang.OutOfMemoryError: PermGen space_ 产生的原因, 我们先来看看 **PermGen** 是用来干什么的。
+我们先看看 **PermGen** 是用来干什么的。
 
 For practical purposes, the permanent generation consists mostly of class declarations loaded and stored into PermGen. This includes the name and fields of the class, methods with the method bytecode, constant pool information, object arrays and type arrays associated with a class and Just In Time compiler optimizations.
 
-【JDK1.7及之前版本】实际上, 永久代(permanent generation) 主要保存加载/缓存到内存中的 class 定义, 包括 class 的 名称(name), 字段(fields), 方法(methods)和字节码(method bytecode); 常量池(constant pool information); 对象数组(object arrays)/类型数组(type arrays)所关联的 class, 以及 JIT 编译器优化后的class信息等。
+在JDK1.7及之前的版本, 永久代(permanent generation) 主要用于存储加载/缓存到内存中的 class 定义, 包括 class 的 名称(name), 字段(fields), 方法(methods)和字节码(method bytecode); 以及常量池(constant pool information); 对象数组(object arrays)/类型数组(type arrays)所关联的 class, 还有 JIT 编译器优化后的class信息等。
 
 From the above definition you can deduce that the PermGen size requirements depend both on the number of classes loaded as well as the size of such class declarations. Therefore we can say that **the main cause for the _java.lang.OutOfMemoryError: PermGen space_ is that either too many classes or too big classes are loaded to the permanent generation**.
 
-由此可知, PermGen 的使用量和 JVM 加载到内存中的 class 的数量/大小有关。可以说, 造成 _java.lang.OutOfMemoryError: PermGen space_ 错误的主要原因, 是加载到内存中的 class 数量太多或者体积太大。
+很容易看出, PermGen 的使用量和JVM加载到内存中的 class 数量/大小有关。可以说 _java.lang.OutOfMemoryError: PermGen space_ 的主要原因, 是加载到内存中的 class 数量太多或体积太大。
 
 
 
