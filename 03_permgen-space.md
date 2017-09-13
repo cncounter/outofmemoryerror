@@ -49,7 +49,7 @@ From the above definition you can deduce that the PermGen size requirements depe
 
 As we described above, PermGen space usage is strongly correlated with the number of classes loaded into the JVM. The following code serves as the most straightforward example:
 
-我们知道, PermGen 空间的使用量, 与JVM加载的 class 数量有很大关系。下面的代码直接创建了很多class:
+我们知道, PermGen 空间的使用量, 与JVM加载的 class 数量有很大关系。下面的代码演示了这种情况:
 
 
 
@@ -72,13 +72,13 @@ public class MicroGenerator {
 
 In this example the source code iterates over a loop and generates classes at runtime. Class generation complexity is being taken care of by the [javassist](http://www.csg.ci.i.u-tokyo.ac.jp/~chiba/javassist/) library.
 
-这段代码通过 for 循环, 在执行过程中, 动态生成了很多class。可以看到, 这里使用 [javassist](http://www.csg.ci.i.u-tokyo.ac.jp/~chiba/javassist/) 库生成 class 是非常简单的。
+这段代码在 for 循环中, 动态生成了很多class。可以看到, 使用 [javassist](http://www.csg.ci.i.u-tokyo.ac.jp/~chiba/javassist/) 工具类生成 class 是非常简单的。
 
 Launching the code above will keep generating new classes and loading their definitions into Permgen space until the space is fully utilized and the _java.lang.OutOfMemoryError: Permgen space_ is thrown.
 
-生成很多新 class 并加载到JVM, 然后将会占满Permgen空间, 抛出 _java.lang.OutOfMemoryError: Permgen space_ 错误, 当然, 也有可能会抛出其他类型的 OutOfMemoryError。
+执行这段代码, 会生成很多新的 class 并将其加载到内存中, 随着生成的class越来越多,将会占满Permgen空间, 然后抛出 _java.lang.OutOfMemoryError: Permgen space_ 错误, 当然, 也有可能会抛出其他类型的 OutOfMemoryError。
 
-为了快速看到效果, 可以加上适当的JVM启动参数, 如: `-Xmx200M -XX:MaxPermSize=16M ` 之类的参数。
+要快速看到效果, 可以加上适当的JVM启动参数, 如: `-Xmx200M -XX:MaxPermSize=16M ` 等等。
 
 
 ### Redeploy-time example
