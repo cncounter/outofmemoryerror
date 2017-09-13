@@ -6,7 +6,7 @@
 
 Java applications are only allowed to use a limited amount of memory. The exact amount of memory your particular application can use is specified during application startup. To make things more complex, Java memory is separated into different regions which can be seen in the following figure:
 
-JVM限制了Java程序的最大内存使用量, 由启动参数决定。而Java的堆内存被划分为多个区域, 如下图所示:
+JVM限制了Java程序的最大内存使用量, 可以通过启动参数来配置。而Java的堆内存被划分为多个区域, 如下图所示:
 
 
 ![java.lang.outofmemoryerror: Permgen space](03_01_java.lang_.outofmemoryerror-permgen-space.png)
@@ -31,11 +31,11 @@ To understand the cause for the _java.lang.OutOfMemoryError: PermGen space_, we 
 
 For practical purposes, the permanent generation consists mostly of class declarations loaded and stored into PermGen. This includes the name and fields of the class, methods with the method bytecode, constant pool information, object arrays and type arrays associated with a class and Just In Time compiler optimizations.
 
-【JDK1.7及之前版本】实际上, 永久代(permanent generation) 主要由加载/缓存的 class 定义所构成, 包括 class 的 名称(name), 以及字段(fields), 方法(methods)还有字节码(method bytecode); 常量池(constant pool information); 对象数组(object arrays)/类型数组(type arrays)所关联的 class, 还有 JIT 编译器优化后的class等。
+【JDK1.7及之前版本】实际上, 永久代(permanent generation) 主要保存加载/缓存到内存中的 class 定义, 包括 class 的 名称(name), 字段(fields), 方法(methods)和字节码(method bytecode); 常量池(constant pool information); 对象数组(object arrays)/类型数组(type arrays)所关联的 class, 以及 JIT 编译器优化后的class信息等。
 
 From the above definition you can deduce that the PermGen size requirements depend both on the number of classes loaded as well as the size of such class declarations. Therefore we can say that **the main cause for the _java.lang.OutOfMemoryError: PermGen space_ is that either too many classes or too big classes are loaded to the permanent generation**.
 
-由此可知, PermGen 的使用量, 与 JVM 加载到内存中的 class 的数量/尺寸有关。 可以说, 造成 _java.lang.OutOfMemoryError: PermGen space_ 错误的主要原因, 是加载到内存中的 class 数量太多或者体积太大。
+由此可知, PermGen 的使用量和 JVM 加载到内存中的 class 的数量/大小有关。可以说, 造成 _java.lang.OutOfMemoryError: PermGen space_ 错误的主要原因, 是加载到内存中的 class 数量太多或者体积太大。
 
 
 
