@@ -222,7 +222,7 @@ Alternatively, we suggest [Plumbr, the only Java monitoring solution with automa
 Plumbr 在后台负责收集数据 —— 包括堆内存使用情况(只统计对象分布图, 不涉及实际数据),以及在堆转储中不容易发现的各种问题。 如果发生 _java.lang.OutOfMemoryError_ , 还能在不停机的情况下, 做必要的数据处理. 下面是Plumbr 对一个 _java.lang.OutOfMemoryError_ 的提醒:
 
 
-![Plumbr OutOfMemoryError incident alert](02_02_outofmemoryerror-analyzed.png)
+![Plumbr OutOfMemoryError incident alert](01_02_outofmemoryerror-analyzed.png)
 
 
 Without any additional tooling or analysis you can see:
