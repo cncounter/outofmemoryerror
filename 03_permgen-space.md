@@ -6,7 +6,7 @@
 
 Java applications are only allowed to use a limited amount of memory. The exact amount of memory your particular application can use is specified during application startup. To make things more complex, Java memory is separated into different regions which can be seen in the following figure:
 
-JVM限制了Java程序的最大内存使用量, 可以通过启动参数来配置。而Java的堆内存被划分为多个区域, 如下图所示:
+JVM有最大内存限制, 通过启动参数可以修改这些值。Java将堆内存划分为多个区域, 如下图所示:
 
 
 ![java.lang.outofmemoryerror: Permgen space](03_01_java.lang_.outofmemoryerror-permgen-space.png)
