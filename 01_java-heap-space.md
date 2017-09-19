@@ -12,7 +12,7 @@ JVM限制了Java程序的最大内存使用量, 由JVM的启动参数决定。�
 
 The size of those regions is set during the Java Virtual Machine (JVM) launch and can be customized by specifying JVM parameters _-Xmx_ and _-XX:MaxPermSize_. If you do not explicitly set the sizes, platform-specific defaults will be used.
 
-这两块内存区域的最大尺寸, 由JVM启动参数 `-Xmx` 和 `-XX:MaxPermSize` 指定. 如果没有明确指定, 则根据操作系统类型和物理内存的大小来确定。
+这两块内存区域的最大尺寸, 由JVM启动参数 `-Xmx` 和 `-XX:MaxPermSize` 指定. 如果没有明确指定, 则根据平台类型(OS版本+ JVM版本)和物理内存的大小来确定。
 
 The _java.lang.OutOfMemoryError: Java heap space_ error will be triggered when the application **attempts to add more data into the heap space area, but there is not enough room for it**.
 
@@ -40,7 +40,7 @@ There most common reason for the _java.lang.OutOfMemoryError: Java heap space_ e
 
 *   **Memory leaks**. A particular type of programming error will lead your application to constantly consume more memory. Every time the leaking functionality of the application is used it leaves some objects behind into the Java heap space. Over time the leaked objects consume all of the available Java heap space and trigger the already familiar _java.lang.OutOfMemoryError: Java heap space_ error.
 
-*   **内存泄露(Memory leak)**. 这也是一种经常出现的情形。由于代码中的某些错误, 导致系统占用的内存越来越多. 如果某个方法/某段代码存在内存泄漏的, 每执行一次, 就会（有更多的垃圾对象）占用更多的内存. 随着运行时间的推移, 泄漏的对象耗光了堆中的所有内存, 那么 _java.lang.OutOfMemoryError: Java heap space_ 错误就爆发了。
+*   **内存泄露(Memory leak)**. 这也是一种经常出现的情形。由于代码中的某些错误, 导致系统占用的内存越来越多. 如果某个方法/某段代码存在内存泄漏, 每执行一次, 就会（有更多的垃圾对象）占用更多的内存. 随着运行时间的推移, 泄漏的对象耗光了堆中的所有内存, 那么 _java.lang.OutOfMemoryError: Java heap space_ 错误就爆发了。
 
 
 ## Give me an example
@@ -79,7 +79,7 @@ The second and a more realistic example is of a memory leak. In Java, when devel
 
 Java’s automatic memory management relies on [GC](https://plumbr.eu/java-garbage-collection-handbook) to periodically look for unused objects and remove them. Simplifying a bit we can say that a **memory leak in Java is a situation where some objects are no longer used by the application but [Garbage Collection](https://plumbr.eu/handbook/garbage-collection-in-jvm) fails to recognize it**. As a result these unused objects remain in Java heap space indefinitely. This pileup will eventually trigger the _java.lang.OutOfMemoryError: Java heap space_ error.
 
-Java的自动内存管理依赖 [GC](http://blog.csdn.net/column/details/14851.html), GC会一遍又一遍地扫描内存区域, 将不使用的对象删除. 简单来说, **Java中的内存泄漏, 就是那些逻辑上不再使用的对象, 却没有被 [垃圾收集程序](http://blog.csdn.net/renfufei/article/details/54144385) 给干掉**. 从而导致垃圾对象继续占用堆内存中, 逐渐堆积, 最后造成 _java.lang.OutOfMemoryError: Java heap space_ 错误。
+Java的自动内存管理依赖 [GC](http://blog.csdn.net/column/details/14851.html), GC会一遍又一遍地扫描内存区域, 将不使用的对象删除. 简单来说, **Java中的内存泄漏, 就是那些逻辑上不再使用的对象, 却没有被 [垃圾收集程序](http://blog.csdn.net/renfufei/article/details/54144385) 给干掉**. 从而导致垃圾对象继续占用堆内存中, 逐渐堆积, 最后产生 _java.lang.OutOfMemoryError: Java heap space_ 错误。
 
 
 It is fairly easy to construct a Java program that satisfies the definition of a memory leak:
