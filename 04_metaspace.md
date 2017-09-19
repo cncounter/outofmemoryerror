@@ -4,7 +4,7 @@
 
 Java applications are allowed to use only a limited amount of memory. The exact amount of memory your particular application can use is specified during application startup. To make things more complex, Java memory is separated into different regions, as seen in the following figure:
 
-Java应用程序可以只使用有限的内存。具体的您的特定应用程序可以使用的内存数量被指定在应用程序启动期间.为了让事情更复杂,Java内存分为不同的区域,见下图:
+JVM有最大内存限制, 通过修改启动参数可以改变这些值。Java将堆内存划分为多个部分, 如下图所示:
 
 
 ![metaspace error](04_01_OOM-example-metaspace.png)
@@ -13,6 +13,7 @@ Java应用程序可以只使用有限的内存。具体的您的特定应用程�
 
 The size of all those regions, including the metaspace area, can be specified during the JVM launch. If you do not determine the sizes yourself, platform-specific defaults will be used.
 
+这些区域的最大值, 由JVM启动参数 `-Xmx` 和 `-XX:MaxPermSize` 指定. 如果没有明确指定, 则根据操作系统平台和物理内存的大小来确定。
 所有这些区域的大小,包括metaspace区域,可以指定在JVM启动。如果你不确定大小,将使用特定于平台的违约。
 
 The _java.lang.OutOfMemoryError: Metaspace_ message indicates that the Metaspace area in memory is exhausted.
@@ -49,7 +50,7 @@ As you can see, Metaspace size requirements depend both upon the number of class
 
 ## Give me an example
 
-## 给我一个例子
+## 示例
 
 As we explained in the previous chapter, Metaspace usage is strongly correlated with the number of classes loaded into the JVM. The following code serves as the most straightforward example:
 
@@ -79,7 +80,7 @@ The code will keep generating new classes and loading their definitions to Metas
 
 ## What is the solution?
 
-## 解决方案是什么?
+## 解决方案
 
 The first solution when facing the OutOfMemoryError due to Metaspace should be obvious. If the application exhausts the Metaspace area in the memory you should increase the size of Metaspace. Alter your application launch configuration and increase the following:
 
