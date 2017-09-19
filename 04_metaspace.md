@@ -13,16 +13,15 @@ JVM有最大内存限制, 通过修改启动参数可以改变这些值。Java�
 
 The size of all those regions, including the metaspace area, can be specified during the JVM launch. If you do not determine the sizes yourself, platform-specific defaults will be used.
 
-这些区域的最大值, 由JVM启动参数 `-Xmx` 和 `-XX:MaxPermSize` 指定. 如果没有明确指定, 则根据操作系统平台和物理内存的大小来确定。
-所有这些区域的大小,包括metaspace区域,可以指定在JVM启动。如果你不确定大小,将使用特定于平台的违约。
+这些区域的最大值, 由JVM启动参数 `-Xmx` 和 `-XX:MaxMetaspaceSize` 指定. 如果没有明确指定, 则根据操作系统平台和物理内存的大小来确定。
 
 The _java.lang.OutOfMemoryError: Metaspace_ message indicates that the Metaspace area in memory is exhausted.
 
-_java.lang。OutOfMemoryError:Metaspace_消息表明Metaspace区域内存耗尽。
+ _java.lang.OutOfMemoryError: Metaspace_ 错误信息所表达的意思是: **元信息区(Metaspace) 内存已被用满** 
 
 ## What is causing it?
 
-## 是由什么原因导致的?
+## 原因分析
 
 If you are not a newcomer to the Java landscape, you might be familiar with another concept in Java memory management called PermGen. Starting from Java 8, the memory model in Java was significantly changed. A new memory area called Metaspace was introduced and Permgen was removed. This change was made due to variety of reasons, including but not limited to:
 
