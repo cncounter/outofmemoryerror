@@ -4,7 +4,7 @@
 
 Java applications are allowed to use only a limited amount of memory. The exact amount of memory your particular application can use is specified during application startup. To make things more complex, Java memory is separated into different regions, as seen in the following figure:
 
-JVM有最大内存限制, 通过修改启动参数可以改变这些值。Java将堆内存划分为多个部分, 如下图所示:
+JVM限制了Java程序的最大内存, 通过修改/指定启动参数可以改变这种限制。Java中堆内存划分为多个部分, 如下图所示:
 
 
 ![metaspace error](04_01_OOM-example-metaspace.png)
@@ -17,7 +17,7 @@ The size of all those regions, including the metaspace area, can be specified du
 
 The _java.lang.OutOfMemoryError: Metaspace_ message indicates that the Metaspace area in memory is exhausted.
 
- _java.lang.OutOfMemoryError: Metaspace_ 错误信息所表达的意思是: **元信息区(Metaspace) 内存已被用满** 
+_java.lang.OutOfMemoryError: Metaspace_ 错误所表达的信息是: **元信息区(Metaspace) 内存已被用满**
 
 ## What is causing it?
 
@@ -25,27 +25,27 @@ The _java.lang.OutOfMemoryError: Metaspace_ message indicates that the Metaspace
 
 If you are not a newcomer to the Java landscape, you might be familiar with another concept in Java memory management called PermGen. Starting from Java 8, the memory model in Java was significantly changed. A new memory area called Metaspace was introduced and Permgen was removed. This change was made due to variety of reasons, including but not limited to:
 
-如果对Java比较熟悉, 应该知道有一种叫做 PermGen 的内存区. 从 Java 8开始, Java的内存模型发生了重大改变。 引入了一个新的内存区 Metaspace, 用来替代 Permgen. 这种变化是基于多方面的考虑, 例如:
+如果你是Java的老司机, 应该对 PermGen 比较熟悉. 但Java 8的内存池模型发生了改变, 不再使用Permgen, 而是引入一个新的概念: Metaspace. 这种改变基于多方面的考虑, 部分原因列举如下:
 
 *   The required size of permgen was hard to predict. It resulted in either under-provisioning triggering [java.lang.OutOfMemoryError: Permgen size](http://www.plumbr.eu/outofmemoryerror/permgen-space) errors or over-provisioning resulting in wasted resources.
 
-*   permgen具体需要设置多大是很难预测的。设置少了会造成 [java.lang.OutOfMemoryError: Permgen size](http://www.plumbr.eu/outofmemoryerror/permgen-space) 错误, 设置多了又会浪费。
+*   permgen空间的具体多大很难预测。设置少了会造成 [java.lang.OutOfMemoryError: Permgen size](http://www.plumbr.eu/outofmemoryerror/permgen-space) 错误, 设置多了又很浪费。
 
 *   [GC performance](https://plumbr.eu/handbook/gc-tuning/gc-tuning-in-practice) improvements, enabling concurrent class data de-allocation without [GC pauses](https://plumbr.eu/handbook/garbage-collection-algorithms-implementations) and specific iterators on metadata
 
-*   [GC 性能](http://blog.csdn.net/renfufei/article/details/61924893) 的提升, 使得并发的垃圾收集过程中没有 [GC暂停](http://blog.csdn.net/renfufei/article/details/54885190), 对 metadata 的特殊迭代规则。
+*   为了 [GC 性能](http://blog.csdn.net/renfufei/article/details/61924893) 的提升, 使得垃圾收集过程中的并发阶段不再 [停顿](http://blog.csdn.net/renfufei/article/details/54885190), 对 metadata 进行特定的遍历(specific iterators)。
 
 *   Support for further optimizations such as [G1](https://plumbr.eu/handbook/garbage-collection-algorithms-implementations/g1) concurrent class unloading.
 
-*   支持对 [G1垃圾收集器](http://blog.csdn.net/renfufei/article/details/54885190#t9) 的深入优化, 以及并发执行 class 卸载。
+*   对 [G1垃圾收集器](http://blog.csdn.net/renfufei/article/details/54885190#t9) 的并发 class 卸载进行深度优化。
 
 So if you were familiar with PermGen then all you need to know as background is that – whatever was in PermGen before Java 8 (name and fields of the class, methods of a class with the bytecode of the methods, constant pool, JIT optimizations etc) – is now located in Metaspace.
 
-对应的, PermGen 里的所有内容, 在Java8中都迁移到了 Metaspace 空间。例如, class 名称, 字段, 方法, 字节码, 常量池, JIT优化后的代码等等。
+PermGen 中的所有内容, 在Java8中都移动到了 Metaspace 空间。如: class 名称, 字段, 方法, 字节码, 常量池, JIT优化代码, 等等。
 
 As you can see, Metaspace size requirements depend both upon the number of classes loaded as well as the size of such class declarations. So it is easy to see the **main cause for the _java.lang.OutOfMemoryError: Metaspace_ is: either too many classes or too big classes being loaded to the Metaspace.**
 
-如您所见, Metaspace 的使用量和JVM加载到内存中的 class 数量/大小有关。可以说 _java.lang.OutOfMemoryError: Metaspace_ 错误的主要原因, 是加载到内存中的 class 数量太多或体积太大。
+可以看到, Metaspace 的使用量和JVM加载到内存中的 class 数量/大小有关。可以说 _java.lang.OutOfMemoryError: Metaspace_ 错误的主要原因, 是加载到内存中的 class 数量太多或者体积太大。
 
 ## Give me an example
 
