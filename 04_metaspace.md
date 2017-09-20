@@ -53,7 +53,7 @@ As you can see, Metaspace size requirements depend both upon the number of class
 
 As we explained in the previous chapter, Metaspace usage is strongly correlated with the number of classes loaded into the JVM. The following code serves as the most straightforward example:
 
-和上一章讲的类似, Metaspace 空间的使用量, 与JVM加载的 class 数量有很大关系。下面是一个简单的例子:
+和上一章所讲的PermGen类似, Metaspace 空间的使用量, 与JVM加载的 class 数量有很大关系。下面是一个简单的示例:
 
 ```
 public class Metaspace {
@@ -72,11 +72,11 @@ public class Metaspace {
 
 In this example the source code iterates over a loop and generates classes at the runtime. All those generated class definitions end up consuming Metaspace. Class generation complexity is taken care of by the [javassist](http://www.csg.ci.i.u-tokyo.ac.jp/~chiba/javassist/) library.
 
-可以看到, 使用 [javassist](http://www.csg.ci.i.u-tokyo.ac.jp/~chiba/javassist/) 工具类生成 class 是非常简单的。这段代码在 for 循环中, 动态生成了很多class。这些生成的 class 最终会被加载到 Metaspace 中。
+可以看到, 使用 [javassist](http://www.csg.ci.i.u-tokyo.ac.jp/~chiba/javassist/) 工具类生成 class 真的是非常简单。在 for 循环中, 动态生成了很多class, 最终会被加载到 Metaspace 中。
 
 The code will keep generating new classes and loading their definitions to Metaspace until the space is fully utilized and the _java.lang.OutOfMemoryError: Metaspace_ is thrown. When launched with _-XX:MaxMetaspaceSize=64m_ then on Mac OS X my Java 1.8.0_05 dies at around 70,000 classes loaded.
 
-执行这段代码, 会生成很多新的 class 并将其加载到内存中, 随着生成的class越来越多,将会占满 Metaspace 空间, 然后抛出 _java.lang.OutOfMemoryError: Metaspace_. 如果设置了启动参数 _-XX:MaxMetaspaceSize=64m_, 在Mac OS X上, Java 1.8.0_05 大约加载了 70000 个class后挂掉。
+执行这段代码, 随着生成的class越来越多, 将会占满 Metaspace 空间, 然后抛出 _java.lang.OutOfMemoryError: Metaspace_. 如果设置了启动参数 _-XX:MaxMetaspaceSize=64m_, 在Mac OS X上, Java 1.8.0_05 环境下,大约加载 70000 个class之后JVM就会挂掉。
 
 ## What is the solution?
 
@@ -84,7 +84,7 @@ The code will keep generating new classes and loading their definitions to Metas
 
 The first solution when facing the OutOfMemoryError due to Metaspace should be obvious. If the application exhausts the Metaspace area in the memory you should increase the size of Metaspace. Alter your application launch configuration and increase the following:
 
-面对 Metaspace 方面的 OutOfMemoryError 时, 第一大解决方案是增加 Metaspace 的大小. 使用类似下面这样的启动参数即可:
+如果抛出的 OutOfMemoryError 与 Metaspace 有关, 第一解决方案是增加 Metaspace 的大小. 使用下面这样的启动参数即可:
 
 ```
 -XX:MaxMetaspaceSize=512m
@@ -93,17 +93,17 @@ The first solution when facing the OutOfMemoryError due to Metaspace should be o
 
 The above configuration example tells the JVM that Metaspace is allowed to grow up to 512 MB before it can start complaining in the form of _OutOfMemoryError_.
 
-以上配置将JVM的最大 Metaspace 设置为 512MB, 如果还不够, 就会抛出 _OutOfMemoryError_。
+这里将最大 Metaspace 设置为 512MB, 如果没有用完, 就不会抛出 _OutOfMemoryError_。
 
 Another solution is even simpler at first sight. You can remove the limit on Metaspace size altogether by deleting this parameter. But pay attention to the fact that by doing so you can introduce heavy swapping and/or reach native allocation failures instead.
 
-有一种看起来很简单的解决方案, 就是直接去掉 Metaspace 的大小限制。 但需要注意, 不限制Metaspace内存, 如果物理内存不足, 就有可能产生内存交换(swapping), 严重拖累系统性能。 当然,还可能造成native内存分配失败。
+有一种看起来很简单的方案, 是直接去掉 Metaspace 的大小限制。 但需要注意, 不限制Metaspace内存, 如果物理内存不足, 就有可能会引起内存交换(swapping), 严重拖累系统性能。 当然,还可能造成native内存分配失败等问题。
 
-> 我们知道,在现代web集群中,应用系统宁可死,也不可慢。
+> 我们知道,在现代web集群中,宁可让应用节点挂掉, 也不希望响应缓慢。
 
 Before calling it a night though, be warned – more often than not it can happen that by using the above recommended “quick fixes” you end up masking the symptoms by hiding the _java.lang.OutOfMemoryError: Metaspace_ and not tackling the underlying problem. If your application leaks memory or just loads something unreasonable into Metaspace the above solution will not actually improve anything, it will just postpone the problem.
 
-如果不想收到报警, 可以像鸵鸟一样, 把 _java.lang.OutOfMemoryError: Metaspace_ 错误信息隐藏起来。 但这不能真正解决问题, 只会推迟问题爆发的时间。 如果确实存在内存泄露, 请参考前面的文章, 认真解决问题。
+如果不想收到报警, 可以像鸵鸟一样, 把 _java.lang.OutOfMemoryError: Metaspace_ 错误信息隐藏起来。 但不能真正解决问题, 只会推迟问题爆发的时间。 如果确实存在内存泄露, 请参考前面的文章, 认真寻找解决方案。
 
 
 原文链接: <https://plumbr.eu/outofmemoryerror/permgen-space>
