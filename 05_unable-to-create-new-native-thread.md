@@ -1,5 +1,4 @@
-# java.lang.OutOfMemoryError:
-**Unable to create new native thread**
+# java.lang.OutOfMemoryError: Unable to create new native thread
 
 Java applications are multi-threaded by nature. What this means is that the programs written in Java can do several things (seemingly) at once. For example – even on machines with just one processor – while you drag content from one window to another, the movie played in the background does not stop just because you carry out several operations at once.
 
@@ -9,7 +8,7 @@ Now, as with workers in physical world, threads within the JVM need some elbow r
 
 
 
-![java-lang-outofmemoryerror-unable-to-create-new-native-thread](https://plumbr.eu/wp-content/uploads/2014/04/java-lang-outofmemoryerror-unable-to-create-new-native-thread.png)
+![java-lang-outofmemoryerror-unable-to-create-new-native-thread](05_01_unable-to-create-new-native-thread.png)
 
 
 
@@ -72,3 +71,5 @@ max user processes              (-u) 1800
 More often than not, the limits on new native threads hit by the OutOfMemoryError indicate a programming error. When your application spawns thousands of threads then chances are that something has gone terribly wrong – there are not many applications out there which would benefit from such a vast amount of threads.
 
 One way to solve the problem is to start taking thread dumps to understand the situation. You usually end up spending days doing this. Our suggestion is to connect [Plumbr](http://plumbr.eu) to your application to find out what is causing the problem and how to cure it in just minutes.
+
+
