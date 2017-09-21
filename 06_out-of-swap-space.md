@@ -1,11 +1,10 @@
-# java.lang.OutOfMemoryError:
-**Out of swap space?**
+# java.lang.OutOfMemoryError: **Out of swap space?**
 
 Java applications are given limited amount of memory during the startup. This limit is specified via the -Xmx and other similar startup parameters. In situations where the total memory requested by the JVM is larger than the available physical memory, operating system starts swapping out the content from memory to hard drive.
 
 
 
-![java.lang.outofmemoryerror swap](https://plumbr.eu/wp-content/uploads/2014/04/outofmemoryerror-out-of-swap-space.png)
+![java.lang.outofmemoryerror swap](./06_01_outofmemoryerror-out-of-swap-space.png)
 
 
 
@@ -41,3 +40,11 @@ Now, you should recall that due to garbage collection sweeping the memory conten
 If your application is deployed next to a “noisy neighbor” with whom the JVM needs to compete for resources, you should isolate the services to separate (virtual) machines.
 
 And in many cases, your only truly viable alternative is to either upgrade the machine to contain more memory or optimize the application to reduce its memory footprint. When you turn to the optimization path, a good way to start is by using memory dump analyzers to detect large allocations in memory.
+
+
+原文链接: <https://plumbr.eu/outofmemoryerror/out-of-swap-space>
+
+翻译日期: 2017年9月21日
+
+翻译人员: [铁锚: http://blog.csdn.net/renfufei](http://blog.csdn.net/renfufei)
+

@@ -1,11 +1,10 @@
-# java.lang.OutOfMemoryError:
-**Requested array size exceeds VM limit**
+# java.lang.OutOfMemoryError: **Requested array size exceeds VM limit**
 
 Java has got a limit on the maximum array size your program can allocate. The exact limit is platform-specific but is generally somewhere between 1 and 2.1 billion elements.
 
 
 
-![outofmemoryerror](https://plumbr.eu/wp-content/uploads/2014/04/java.lang_.outofmemoryerror-array-size-exceeds-vm-limit.png)
+![outofmemoryerror](./07_01_array-size-exceeds-vm-limit.png)
 
 
 
@@ -15,7 +14,7 @@ When you face the _java.lang.OutOfMemoryError: Requested array size exceeds VM l
 
 The error is thrown by the native code within the JVM. It happens before allocating memory for an array when the JVM performs a platform-specific check: whether the allocated data structure is addressable in this platform. This error is less common than you might initially think.
 
-The reason you only seldom face this error is that Java arrays are indexed by int. The maximum positive int in Java is 2^31 – 1 = 2,147,483,647\. And the platform-specific limits can be really close to this number – for example on my 64bit MB Pro on Java 1.7 I can happily initialize arrays with up to 2,147,483,645 or _Integer.MAX_VALUE-2_ elements.
+The reason you only seldom face this error is that Java arrays are indexed by int. The maximum positive int in Java is `2^31 – 1 = 2,147,483,647`. And the platform-specific limits can be really close to this number – for example on my 64bit MB Pro on Java 1.7 I can happily initialize arrays with up to 2,147,483,645 or _Integer.MAX_VALUE-2_ elements.
 
 Increasing the length of the array by one to Integer.MAX_VALUE-1 results in the familiar _OutOfMemoryError_:
 
@@ -71,3 +70,11 @@ In the first case, check your code base to see whether you really need arrays th
 In the second case – remember that Java arrays are indexed by int. So you cannot go beyond 2^31-1 elements in your arrays when using the standard data structures within the platform. In fact, in this case you are already blocked by the compiler announcing “_error: integer number too large_” during compilation.
 
 But if you really work with truly large data sets, you need to rethink your options. You can load the data you need to work with in smaller batches and still use standard Java tools, or you might go beyond the standard utilities. One way to achieve this is to look into the _sun.misc.Unsafe_ class. This allows you to allocate memory directly like you would in C.
+
+
+原文链接: <https://plumbr.eu/outofmemoryerror/requested-array-size-exceeds-vm-limit>
+
+翻译日期: 2017年9月21日
+
+翻译人员: [铁锚: http://blog.csdn.net/renfufei](http://blog.csdn.net/renfufei)
+

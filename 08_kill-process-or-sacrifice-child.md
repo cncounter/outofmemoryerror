@@ -1,5 +1,4 @@
-# Out of memory:
-**Kill process or sacrifice child**
+# Out of memory: **Kill process or sacrifice child**
 
 In order to understand this error, we need to recoup the operating system basics. As you know, operating systems are built on the concept of processes. Those processes are shepherded by several kernel jobs, one of which, named “Out of memory killer” is of interest to us in this particular case.
 
@@ -7,7 +6,7 @@ This kernel job can annihilate your processes under extremely low memory conditi
 
 
 
-![out of memory linux kernel](https://plumbr.eu/wp-content/uploads/2014/04/out-of-memory-kill-process-or-sacrifice-child.png)
+![out of memory linux kernel](./08_01_out-of-memory-kill-process-or-sacrifice-child.png)
 
 
 
@@ -70,3 +69,12 @@ There are several ways to handle such situation. The first and most straightforw
 Other possibilities would involve [fine-tuning the OOM killer](https://access.redhat.com/site/documentation/en-US/Red_Hat_Enterprise_Linux/6/html/Performance_Tuning_Guide/s-memory-captun.html), scaling the load horizontally across several small instances or reducing the memory requirements of the application.
 
 One solution which we are not keen to recommend involves increasing swap space. When you recall that Java is a garbage collected language, then this solution already seems less lucrative. Modern GC algorithms are efficient when running in physical memory, but when dealing with swapped allocations the efficiency is hammered. Swapping can increase the length of GC pauses in several orders of magnitude, so you should think twice before jumping to this solution.
+
+
+
+原文链接: <https://plumbr.eu/outofmemoryerror/unable-to-create-new-native-thread>
+
+翻译日期: 2017年9月21日
+
+翻译人员: [铁锚: http://blog.csdn.net/renfufei](http://blog.csdn.net/renfufei)
+
