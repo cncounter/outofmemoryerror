@@ -119,3 +119,10 @@ One way to solve the problem is to start taking thread dumps to understand the s
 
 一种解决办法是执行线程转储(thread dump) 来分析具体情景。 通常需要花费好几个工作日。 当然, 我们推荐使用 [Plumbr](http://plumbr.eu) 来找出问题的原因, 分分钟帮你搞定。
 
+
+原文链接: <https://plumbr.eu/outofmemoryerror/unable-to-create-new-native-thread>
+
+翻译日期: 2017年9月21日
+
+翻译人员: [铁锚: http://blog.csdn.net/renfufei](http://blog.csdn.net/renfufei)
+
