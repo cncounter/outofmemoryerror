@@ -4,7 +4,7 @@
 
 Java applications are given limited amount of memory during the startup. This limit is specified via the -Xmx and other similar startup parameters. In situations where the total memory requested by the JVM is larger than the available physical memory, operating system starts swapping out the content from memory to hard drive.
 
-Java应用程序启动期间给出有限的内存。这个限制是通过指定- xmx和其他类似的启动参数.在JVM所请求的总内存的情况下大于可用的物理内存,操作系统开始交换的内容从内存硬盘。
+Java程序由JVM启动参数指定了最大内存限制。包括 `-Xmx` 和其他类似的启动参数. 如果JVM请求的内存总数大于可用的物理内存, 则操作系统会将部分内存置换到硬盘中。
 
 ![java.lang.outofmemoryerror swap](./06_01_outofmemoryerror-out-of-swap-space.png)
 
@@ -12,11 +12,11 @@ Java应用程序启动期间给出有限的内存。这个限制是通过指定-
 
 The _java.lang.OutOfMemoryError: Out of swap space?_ error indicates that the swap space is also exhausted and the new attempted allocation fails due to the lack of both physical memory and swap space.
 
-的_java.lang.OutOfMemoryError:交换空间?_误差表明,交换空间也是疲惫和新的尝试分配失败由于缺乏物理内存和交换空间。
+_java.lang.OutOfMemoryError: Out of swap space?_ 表明, 交换空间(swap space,虚拟内存) 已经耗尽,由于物理内存和交换空间都不足导致内存分配失败, 。
 
 ## What is causing it?
 
-## 是由什么原因导致的?
+## 原因分析
 
 The _java.lang.OutOfmemoryError: Out of swap space?_ is thrown by JVM when an allocation request for bytes from the native heap fails and the native heap is close to exhaustion. The message indicates the size (in bytes) of the allocation which failed and the reason for the memory request.
 
@@ -44,7 +44,7 @@ It is also possible that the application fails due to a native leak, for example
 
 ## What is the solution?
 
-## 解决方案是什么?
+## 解决方案
 
 To overcome this issue, you have several possibilities. First and often the easiest workaround is to increase swap space. The means for this are platform specific, for example in Linux you can achieve with the following example sequence of commands, which create and attach a new swapfile sized at 640MB:
 
