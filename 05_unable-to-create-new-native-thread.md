@@ -4,15 +4,15 @@
 
 Java applications are multi-threaded by nature. What this means is that the programs written in Java can do several things (seemingly) at once. For example – even on machines with just one processor – while you drag content from one window to another, the movie played in the background does not stop just because you carry out several operations at once.
 
-Java应用程序本质上是多线程的。这意味着用Java语音编写的程序可以同时做多件事情(至少看起来是这样的). 比如, 在播放视频的过程中, 用户在将一个窗口中的内容拖放到另一个窗口中, 视频却不会因为其他操作而暂停, 即使物理机上只有一个CPU。
+Java应用程序本质上是多线程的。用Java编写的程序可以同时执行多件事情. 就像是在播放视频的时候, 还可以将窗口中的内容拖放到另一个窗口中, 视频却不会因为这些操作而暂停, 即使物理机上只有一个CPU。
 
 A way to think about threads is to think of them as workers to whom you can submit tasks to carry out. If you had only one worker, he or she could only carry out one task at the time. But when you have a dozen workers at your disposal they can simultaneously fulfill several of your commands.
 
-可以将线程(thread)看作是干活的工人。 如果只有一个工人, 他/她 同一时间只能执行一个任务. 但如果你有很多工人, 就可以同时执行多个命令。
+线程(thread)可以看作是干活的工人(workers)。 只有一个工人的话, 在同一时间,只能执行一项任务. 但如果有很多工人, 就可以同时执行多项任务。
 
 Now, as with workers in physical world, threads within the JVM need some elbow room to carry out the work they are summoned to deal with. When there are more threads than there is room in memory we have built a foundation for a problem:
 
-和现实世界的工人类似, JVM中的线程也需要一些空间来执行他们的任务. 如果线程数量太多, 就会引入一个新的问题:
+和现实世界类似, JVM中的线程也需要有相应的空间来执行自己的任务. 如果线程数量太多, 就会引入新的问题:
 
 
 ![java-lang-outofmemoryerror-unable-to-create-new-native-thread](05_01_unable-to-create-new-native-thread.png)
@@ -21,7 +21,7 @@ Now, as with workers in physical world, threads within the JVM need some elbow r
 
 The message _java.lang.OutOfMemoryError: Unable to create new native thread_ means that the **Java application has hit the limit of how many Threads it can launch.**
 
-_java.lang.OutOfMemoryError: Unable to create new native thread_ 错误表明: **Java应用程序创建的线程已达到上限**
+_java.lang.OutOfMemoryError: Unable to create new native thread_ 错误表达的意思是: **程序创建的线程已达到上限**
 
 ## What is causing it?
 
@@ -41,15 +41,15 @@ You have a chance to face the _java.lang.OutOfMemoryError: Unable to create new 
 
 5.  The _java.lang.OutOfMemoryError: Unable to create new native thread_ error is thrown.
 
-1. JVM中的程序请求创建一个新的Java线程;
+6.  JVM中的程序请求创建一个新的Java线程;
 
-2. JVM本地代码(native code)代理该请求, 创建一个操作系统级别的 native thread(原生线程);
+7.  JVM本地代码(native code)代理该请求, 创建一个操作系统级别的 native thread(原生线程);
 
-3. 操作系统尝试创建一个新的native thread, 需要同时分配一些内存给该线程;
+8.  操作系统尝试创建一个新的native thread, 需要同时分配一些内存给该线程;
 
-4. 如果操作系统的虚拟内存已耗尽, 或者是32位进程的地址空间耗尽(约2-4GB), 就会拒绝本地内存分配;
+9.  如果操作系统的虚拟内存已耗尽, 或者是32位进程的地址空间耗尽(约2-4GB), 就会拒绝本地内存分配;
 
-5. 抛出 _java.lang.OutOfMemoryError: Unable to create new native thread_  错误。
+10.  抛出 _java.lang.OutOfMemoryError: Unable to create new native thread_  错误。
 
 ## Give me an example
 
