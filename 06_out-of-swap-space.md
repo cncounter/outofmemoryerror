@@ -4,7 +4,7 @@
 
 Java applications are given limited amount of memory during the startup. This limit is specified via the -Xmx and other similar startup parameters. In situations where the total memory requested by the JVM is larger than the available physical memory, operating system starts swapping out the content from memory to hard drive.
 
-Java程序由JVM启动参数指定了最大内存限制。包括 `-Xmx` 和其他类似的启动参数. 如果JVM请求的内存总数大于可用的物理内存, 则操作系统会将部分内存置换到硬盘中。
+Java程序由JVM启动参数指定了最大内存限制。包括 `-Xmx` 和其他类似的启动参数. 如果JVM请求的内存总数大于可用的物理内存, 操作系统可能会使用虚拟内存。
 
 ![java.lang.outofmemoryerror swap](./06_01_outofmemoryerror-out-of-swap-space.png)
 
@@ -20,27 +20,27 @@ _java.lang.OutOfMemoryError: Out of swap space?_ 表明, 交换空间(swap space
 
 The _java.lang.OutOfmemoryError: Out of swap space?_ is thrown by JVM when an allocation request for bytes from the native heap fails and the native heap is close to exhaustion. The message indicates the size (in bytes) of the allocation which failed and the reason for the memory request.
 
-_java.lang。OutOfmemoryError:交换空间?_抛出时,JVM分配请求字节从本机堆失败和本机堆接近枯竭.消息显示的大小(以字节为单位)分配失败和内存请求的原因。
+ _java.lang.OutOfmemoryError: Out of swap space?_ 错误抛出时, JVM请求分配本机内存失败, 而且本机heap内存接近耗尽. 消息表明请求的内存分配失败,。
 
 The problem occurs in situations where the Java processes have started swapping, which, recalling that [Java is a garbage collected language](https://plumbr.eu/handbook/garbage-collection-in-jvm) is already not a good situation. Modern [GC algorithms](https://plumbr.eu/handbook/garbage-collection-algorithms-implementations) do a good job, but when faced with latency issues caused by swapping, the [GC pauses](https://plumbr.eu/handbook/gc-tuning/gc-tuning-in-practice) tend to increase to levels not tolerable by most applications.
 
-这个问题发生在Java进程已经开始交换的情况下,,回忆,(Java是一种垃圾收集语言)(https://plumbr).欧盟/手册/ garbage-collection-in-jvm)已经不是一个好的状况。现代GC算法(https://plumbr.欧盟/手册/ garbage-collection-algorithms-implementations)做一个好工作,但是当面对交换造成的延迟问题,[GC暂停](https://plumbr.欧盟/手册/ gc-tuning / gc-tuning-in-practice)增加,大部分应用程序不能容忍的水平。
+问题发生在Java进程已经开始使用交换内存的情况下, 这对 [Java的垃圾收集](http://blog.csdn.net/renfufei/article/details/54144385) 来说是很难应付的场景。现代的[GC算法](http://blog.csdn.net/renfufei/article/details/54885190) 虽然很先进, 但内存不足导致虚拟内存交换，影响系统的延迟, [GC暂停](http://blog.csdn.net/renfufei/article/details/61924893) 会增长到令人不能容忍的地步。
 
 _java.lang.OutOfMemoryError: Out of swap space?_ is often caused by operating system level issues, such as:
 
-_java.lang。OutOfMemoryError:交换空间?_通常是由操作系统级问题引起的,例如:
+_java.lang.OutOfMemoryError: Out of swap space?_ 通常是操作系统层面的问题,例如:
 
 *   The operating system is configured with insufficient swap space.
 
-*操作系统配置交换空间不足。
+*   操作系统设置的交换空间不足。
 
 *   Another process on the system is consuming all memory resources.
 
-*另一个进程在系统上是所有内存资源消耗。
+*   本机的另一个进程消耗了所有的内存资源。
 
 It is also possible that the application fails due to a native leak, for example, if application or library code continuously allocates memory but does not release it to the operating system.
 
-也有可能由于本机应用程序失败泄漏,例如,如果应用程序或库代码连续分配内存,但不释放它给操作系统。
+当然也有可能是因为应用程序的本地内存泄漏引起的,例如, 程序或库不断地申请内存,却不释放。
 
 ## What is the solution?
 
