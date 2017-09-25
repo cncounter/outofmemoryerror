@@ -48,7 +48,7 @@ It is also possible that the application fails due to a native leak, for example
 
 To overcome this issue, you have several possibilities. First and often the easiest workaround is to increase swap space. The means for this are platform specific, for example in Linux you can achieve with the following example sequence of commands, which create and attach a new swapfile sized at 640MB:
 
-为了克服这个问题,你有几个可能性。第一,通常最简单的方法是增加交换空间.意味着这个特定于平台的,例如在Linux中可以实现下面的示例命令序列,创建和附加新的swapfile在640 mb大小的:
+解决这类问题有多种选择。第一, 最简单的方法是增加交换空间(swap space). 各个操作系统的具体设置方法不一样, 例如在Linux中,可以通过下面的命令进行设置, 创建一个 640MB 的 swapfile 并启用交换空间:
 
 ```
 swapoff -a
@@ -61,15 +61,15 @@ swapon swapfile
 
 Now, you should recall that due to garbage collection sweeping the memory content, swapping is undesirable for Java processes in general. Running [garbage collection algorithms](https://plumbr.eu/handbook/garbage-collection-algorithms-implementations) on swapped allocations can increase the length of [GC pauses](https://plumbr.eu/handbook/gc-tuning/gc-tuning-in-practice) by several orders of magnitude, so you should think twice before jumping to the easy solution bandwagon.
 
-现在,你应该记得,由于垃圾收集全面的记忆内容,交换是不受欢迎的Java进程。运行垃圾收集算法(https://plumbr.欧盟/手册/ garbage-collection-algorithms-implementations)交换分配的长度可以增加GC暂停(https://plumbr.欧盟/手册/ gc-tuning / gc-tuning-in-practice)由几个数量级,所以你应该三思而后行跟风容易的解决方案。
+因为垃圾收集器需要清理整个内存空间, 对Java来说交换内存最难以忍受的。存在内存交换时,执行 [垃圾收集](http://blog.csdn.net/renfufei/article/details/54885190) 会显著增加几个数量级的 [GC暂停](http://blog.csdn.net/renfufei/article/details/61924893) 时间, 所以不要随意增加交换内存。
 
 If your application is deployed next to a “noisy neighbor” with whom the JVM needs to compete for resources, you should isolate the services to separate (virtual) machines.
 
-如果您的应用程序部署在一个“吵闹的邻居”与JVM需要对资源的竞争,你应该隔离服务分离(虚拟)的机器。
+如果应用程序还遭受到 “坏邻居效应” 的干扰, JVM需要与其他程序进行资源竞争, 那就应该部署到单独的服务器/虚拟机中。
 
 And in many cases, your only truly viable alternative is to either upgrade the machine to contain more memory or optimize the application to reduce its memory footprint. When you turn to the optimization path, a good way to start is by using memory dump analyzers to detect large allocations in memory.
 
-在许多情况下,你唯一真正可行的替代方法是升级机器包含更多的内存或减少内存占用优化应用程序.当你转向优化路径,一个好的方法是通过使用内存转储分析检测大型分配在内存中。
+很多时候, 你唯一能做的就是升级服务器配置, 加大物理机的内存。当然也可以选择优化应用程序, 降低内存占用, 可以使用内存转储分析器来检测哪些地方存在大量的内存分配。
 
 
 
