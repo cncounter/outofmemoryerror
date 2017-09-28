@@ -2,9 +2,19 @@
 
 # OutOfMemoryError系列（6）: Out of swap space?
 
+
+这是本系列的第六篇文章, 相关文章列表:
+
+- [OutOfMemoryError系列（1）: Java heap space](http://blog.csdn.net/renfufei/article/details/76350794)
+- [OutOfMemoryError系列（2）: GC overhead limit exceeded](http://blog.csdn.net/renfufei/article/details/77585294)
+- [OutOfMemoryError系列（3）: Permgen space](http://blog.csdn.net/renfufei/article/details/77994177)
+- [OutOfMemoryError系列（4）: Metaspace](http://blog.csdn.net/renfufei/article/details/78061354)
+- [OutOfMemoryError系列（5）: Unable to create new native thread](http://blog.csdn.net/renfufei/article/details/78088553)
+
+
 Java applications are given limited amount of memory during the startup. This limit is specified via the -Xmx and other similar startup parameters. In situations where the total memory requested by the JVM is larger than the available physical memory, operating system starts swapping out the content from memory to hard drive.
 
-Java程序由JVM启动参数指定了最大内存限制。包括 `-Xmx` 和其他类似的启动参数. 如果JVM请求的内存总数大于可用的物理内存, 操作系统可能会使用虚拟内存。
+JVM启动参数指定了最大内存限制。例如 `-Xmx` 和其他类似的启动参数. 假若JVM使用的内存总量超过可用的物理内存, 操作系统可能会使用虚拟内存。
 
 ![java.lang.outofmemoryerror swap](./06_01_outofmemoryerror-out-of-swap-space.png)
 
