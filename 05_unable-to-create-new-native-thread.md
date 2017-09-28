@@ -2,6 +2,14 @@
 
 # OutOfMemoryError系列（5）: Unable to create new native thread
 
+这是本系列的第五篇文章, 相关文章列表:
+
+- [OutOfMemoryError系列（1）: Java heap space](http://blog.csdn.net/renfufei/article/details/76350794)
+- [OutOfMemoryError系列（2）: GC overhead limit exceeded](http://blog.csdn.net/renfufei/article/details/77585294)
+- [OutOfMemoryError系列（3）: Permgen space](http://blog.csdn.net/renfufei/article/details/77994177)
+- [OutOfMemoryError系列（4）: Metaspace](http://blog.csdn.net/renfufei/article/details/78061354)
+- [OutOfMemoryError系列（5）: Unable to create new native thread](http://blog.csdn.net/renfufei/article/details/78088553)
+
 Java applications are multi-threaded by nature. What this means is that the programs written in Java can do several things (seemingly) at once. For example – even on machines with just one processor – while you drag content from one window to another, the movie played in the background does not stop just because you carry out several operations at once.
 
 Java程序本质上是多线程的, 可以同时执行多项任务。 类似于在播放视频的时候, 可以拖放窗口中的内容, 却不需要暂停视频播放, 即便是物理机上只有一个CPU。
