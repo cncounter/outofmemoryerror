@@ -1,6 +1,19 @@
 # java.lang.OutOfMemoryError: Requested array size exceeds VM limit
 
-# . lang。VM OutOfMemoryError:要求数组大小超过限制
+# OutOfMemoryError系列（7）: Requested array size exceeds VM limit
+
+
+
+这是本系列的第七篇文章, 相关文章列表:
+
+- [OutOfMemoryError系列（1）: Java heap space](http://blog.csdn.net/renfufei/article/details/76350794)
+- [OutOfMemoryError系列（2）: GC overhead limit exceeded](http://blog.csdn.net/renfufei/article/details/77585294)
+- [OutOfMemoryError系列（3）: Permgen space](http://blog.csdn.net/renfufei/article/details/77994177)
+- [OutOfMemoryError系列（4）: Metaspace](http://blog.csdn.net/renfufei/article/details/78061354)
+- [OutOfMemoryError系列（5）: Unable to create new native thread](http://blog.csdn.net/renfufei/article/details/78088553)
+- [OutOfMemoryError系列（6）: Out of swap space？](http://blog.csdn.net/renfufei/article/details/78136638)
+
+
 
 Java has got a limit on the maximum array size your program can allocate. The exact limit is platform-specific but is generally somewhere between 1 and 2.1 billion elements.
 
@@ -17,7 +30,7 @@ When you face the `java.lang.OutOfMemoryError: Requested array size exceeds VM l
 
 ## What is causing it?
 
-## 是由什么原因导致的?
+## 原因分析
 
 The error is thrown by the native code within the JVM. It happens before allocating memory for an array when the JVM performs a platform-specific check: whether the allocated data structure is addressable in this platform. This error is less common than you might initially think.
 
@@ -43,7 +56,7 @@ But the limit might not be that high – on 32-bit Linux with OpenJDK 6, you wil
 
 ## Give me an example
 
-## 给我一个例子
+## 示例
 
 When trying to recreate the `java.lang.OutOfMemoryError: Requested array size exceeds VM limit` error, let’s look at the following code:
 
@@ -89,7 +102,7 @@ This example also demonstrates why the error is so rare – in order to see the 
 
 ## What is the solution?
 
-## 解决方案是什么?
+## 解决方案
 
 The `java.lang.OutOfMemoryError: Requested array size exceeds VM limit` can appear as a result of either of the following situations:
 
