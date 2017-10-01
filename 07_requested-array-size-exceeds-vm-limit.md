@@ -17,7 +17,7 @@
 
 Java has got a limit on the maximum array size your program can allocate. The exact limit is platform-specific but is generally somewhere between 1 and 2.1 billion elements.
 
-Java有一个限制最大数组大小您的程序可以分配。确切的限制是特定于平台的,但通常是介于1和21亿个元素。
+Java限制了数组的最大尺寸。各个平台的具体限制可以不同, 但范围都在 `1 ~ 21亿` 之间。
 
 
 ![outofmemoryerror](./07_01_array-size-exceeds-vm-limit.png)
@@ -26,7 +26,7 @@ Java有一个限制最大数组大小您的程序可以分配。确切的限制�
 
 When you face the `java.lang.OutOfMemoryError: Requested array size exceeds VM limit`, this means that the application that crashes with the error is trying to allocate an array larger than the Java Virtual Machine can support.
 
-当你面对`java.lang.OutOfMemoryError: Requested array size exceeds VM limit`,这意味着应用程序崩溃的错误正试图分配一个数组比Java虚拟机可以支持。
+如果程序抛出 `java.lang.OutOfMemoryError: Requested array size exceeds VM limit` 错误, 就说明试图分配的数组大小超过 JVM 的限制。
 
 ## What is causing it?
 
@@ -34,15 +34,15 @@ When you face the `java.lang.OutOfMemoryError: Requested array size exceeds VM l
 
 The error is thrown by the native code within the JVM. It happens before allocating memory for an array when the JVM performs a platform-specific check: whether the allocated data structure is addressable in this platform. This error is less common than you might initially think.
 
-本机代码抛出的错误是在JVM中.它发生之前为数组分配内存时,JVM执行一个特定于平台的检查:是否分配数据结构是这个平台的可寻址.这个错误是比最初你可能会觉得不太常见。
+该错误是由JVM中的本地代码所抛出的. 它发生在为数组真正分配内存之前, JVM会执行一项检查: 所分配的数据结构在该平台是否可寻址(addressable). 这个错误可能比你所想的还要少见。
 
 The reason you only seldom face this error is that Java arrays are indexed by int. The maximum positive int in Java is `2^31 – 1 = 2,147,483,647`. And the platform-specific limits can be really close to this number – for example on my 64bit MB Pro on Java 1.7 I can happily initialize arrays with up to 2,147,483,645 or `Integer.MAX_VALUE-2` elements.
 
-你只有很少面对这个错误的原因是Java int数组索引。最大的正用Java int`2^31 – 1 = 2,147,483,647`。和特定于平台的限制可以非常接近这个数字——例如在我64位MB Pro在Java 1.7我可以愉快地使用2147483645或初始化数组`Integer.MAX_VALUE-2`元素。
+我们很少面对这个错误, 是因为Java使用 int 来作为数组的下标(index, 索引)。Java中int类型的最大值为 `2^31 – 1 = 2,147,483,647`。特定平台的限制一般都约等于这个数字 —— 例如 64位的 MB Pro 机器上, Java 1.7 可以很愉快地分大小为 `2,147,483,645`, 或者大小为 `Integer.MAX_VALUE-2`) 的数组。
 
 Increasing the length of the array by one to Integer.MAX_VALUE-1 results in the familiar `OutOfMemoryError`:
 
-增加一个整数数组的长度。在熟悉的MAX_VALUE-1结果`OutOfMemoryError`:
+将这个数字增加 1, 即 `Integer.MAX_VALUE-1`, 结果就是抛出很脸熟的 `OutOfMemoryError`:
 
 ```
 `Exception in thread "main" java.lang.OutOfMemoryError: Requested array size exceeds VM limit`
@@ -52,7 +52,7 @@ Increasing the length of the array by one to Integer.MAX_VALUE-1 results in the 
 
 But the limit might not be that high – on 32-bit Linux with OpenJDK 6, you will hit the “`java.lang.OutOfMemoryError: Requested array size exceeds VM limit`” already when allocating an array with ~1.1 billion elements. To understand the limits of your specific environments run the small test program described in the next chapter.
 
-但限制可能不会有那么的高,在32位Linux OpenJDK 6,你会遭遇“`java.lang.OutOfMemoryError: Requested array size exceeds VM limit`“已经分配一个数组时~ 11亿元素。理解您的特定环境中运行的极限小的下一章中描述的测试程序。
+但最大值限制可能还会小一些, 在32位Linux的 OpenJDK 6上面, 数组长度大约在 11亿(约`2^30`) 时,就会抛出 “`java.lang.OutOfMemoryError: Requested array size exceeds VM limit`“ 错误。要找出具体的限制, 执行一个小小的测试用例即可,请参考下文。
 
 ## Give me an example
 
