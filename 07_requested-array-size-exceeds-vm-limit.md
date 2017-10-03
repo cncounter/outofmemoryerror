@@ -60,7 +60,7 @@ But the limit might not be that high – on 32-bit Linux with OpenJDK 6, you wil
 
 When trying to recreate the `java.lang.OutOfMemoryError: Requested array size exceeds VM limit` error, let’s look at the following code:
 
-当试图重现`java.lang.OutOfMemoryError: Requested array size exceeds VM limit`错误,让我们来看看下面的代码:
+下面的示例用来演示 `java.lang.OutOfMemoryError: Requested array size exceeds VM limit` 错误:
 
 ```
  for (int i = 3; i >= 0; i--) {
@@ -70,14 +70,15 @@ When trying to recreate the `java.lang.OutOfMemoryError: Requested array size ex
   } catch (Throwable t) {
     t.printStackTrace();
   }
-} 
+}
+
 ```
 
 
 
 The example iterates four times and initializes an array of long primitives on each turn. The size of the array this program is trying to initialize grows by one with every iteration and finally reaches Integer.MAX_VALUE. Now, when launching the code snippet on 64-bit Mac OS X with Hotspot 7, you should get the output similar to the following:
 
-迭代的例子并初始化一个数组的四倍长原语在每个转弯.数组的大小这个程序正在初始化一个每次迭代生长,并最终达到Integer.MAX_VALUE.现在,当启动代码片段在64位Mac OS X热点7,应该会得到类似于下面的输出:
+这个例子循环4次, 每次都尝试初始化一个 int 数组, 长度从 `Integer.MAX_VALUE-3` 开始, 到 `Integer.MAX_VALUE` 为止. 如果在 64-bit Mac OS X with Hotspot 7 平台上执行, 应该会得到类似下面这样的输出:
 
 ```
 java.lang.OutOfMemoryError: Java heap space
@@ -94,11 +95,11 @@ java.lang.OutOfMemoryError: Requested array size exceeds VM limit
 
 Note that before facing `java.lang.OutOfMemoryError: Requested array size exceeds VM limit` on the last two attempts, the allocations failed with a lot more familiar `java.lang.OutOfMemoryError: Java heap space` message. It happens because the 2^31-1 int primitives you are trying to make room for require 8G of memory which is less than the defaults used by the JVM.
 
-请注意,在面临`java.lang.OutOfMemoryError: Requested array size exceeds VM limit`在过去的两次,分配失败的更熟悉`java.lang.OutOfMemoryError: Java heap space`消息。这是因为2 ^还有int原语你们房间需要8 g的内存小于默认使用的JVM。
+请注意, 在后面两次循环中, 在抛出 `java.lang.OutOfMemoryError: Requested array size exceeds VM limit` 错误之前, 先抛出了我们熟悉的 `java.lang.OutOfMemoryError: Java heap space` 错误。 这是因为 `2^31-1` 个 int 型数据所占用的内存超过了JVM默认使用的8GB内存。
 
 This example also demonstrates why the error is so rare – in order to see the VM limit on array size being hit, you need to allocate an array with the size right in between the platform limit and Integer.MAX_INT. When our example is run on 64bit Mac OS X with Hotspot 7, there are only two such array lengths: Integer.MAX_INT-1 and Integer.MAX_INT.
 
-这个示例还演示了为什么错误是如此罕见的——为了看到VM限制数组大小被打击,你需要分配一个数组的大小在平台限制和Integer.MAX_INT之间.当我们的例子是运行在64位Mac OS X与热点7中,只有两个这样的数组长度:整数。MAX_INT-1 Integer.MAX_INT。
+此示例还演示了为什么这个错误比较罕见 —— 为了看到VM对数组大小的限制, 需要分配一个差不多等于 `Integer.MAX_INT` 的数字. 我们的示例运行在64位的Mac OS X, Hotspot 7平台上, 只有两个长度会导致这个错误: `Integer.MAX_INT-1` 和 `Integer.MAX_INT`。
 
 ## What is the solution?
 
