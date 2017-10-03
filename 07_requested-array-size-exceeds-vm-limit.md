@@ -107,27 +107,27 @@ This example also demonstrates why the error is so rare – in order to see the 
 
 The `java.lang.OutOfMemoryError: Requested array size exceeds VM limit` can appear as a result of either of the following situations:
 
-的`java.lang.OutOfMemoryError: Requested array size exceeds VM limit`可以导致出现以下情况:
+发生 `java.lang.OutOfMemoryError: Requested array size exceeds VM limit` 错误的原因可能是下列情况:
 
 *   Your arrays grow too big and end up having a size between the platform limit and the `Integer.MAX_INT`
 
-*你的数组增长太大,最终有一个平台限制和之间的大小`Integer.MAX_INT`
+*   数组太大, 最终长度介于平台限制值与 `Integer.MAX_INT` 之间
 
 *   You deliberately try to allocate arrays larger than 2^31-1 elements to experiment with the limits.
 
-*你故意试图分配数组大于2 ^还有元素实验的局限性。
+*   为了测试系统限制, 故意分配长度超过 `2^31-1` 的数组。
 
 In the first case, check your code base to see whether you really need arrays that large. Maybe you could reduce the size of the arrays and be done with it. Or divide the array into smaller bulks and load the data you need to work with in batches fitting into your platform limit.
 
-在第一种情况下,检查您的代码库,看你是否真的需要大的数组。也许你可以减少数组的大小,就万事大吉了.或者把数组分成较小的膨胀和加载数据需要处理批量限制适合你的平台。
+第一种情况, 请检查业务代码, 看看是否真的需要那么大的数组。如果可以减小数组长度, 那就万事大吉. 如果不行，那就需要把数据拆分为多个小一点的块, 然后根据需要按批次加载数据。
 
 In the second case – remember that Java arrays are indexed by int. So you cannot go beyond 2^31-1 elements in your arrays when using the standard data structures within the platform. In fact, in this case you are already blocked by the compiler announcing “`error: integer number too large`” during compilation.
 
-在第二种情况下,记住Java int数组索引。所以你不能超出2 ^还有元素在数组在使用标准的数据结构内的平台.事实上,在这种情况下,你已经被编译器宣布“`error: integer number too large`“在编译。
+如果是第二种情况, 请记住 Java 数组使用 int作为索引。所以不能超过 ` 2^31-1 ` 个元素. 事实上,在这种情况下, 程序代码会在编译阶段被拦截, 报错信息是 “`error: integer number too large`”。
 
 But if you really work with truly large data sets, you need to rethink your options. You can load the data you need to work with in smaller batches and still use standard Java tools, or you might go beyond the standard utilities. One way to achieve this is to look into the `sun.misc.Unsafe` class. This allows you to allocate memory directly like you would in C.
 
-但如果你真正地处理大型数据集,你需要考虑你的选择.你可以载数据需要与你在batches and still使用《标准工具、但据You爪哇超越了《标准》(公用事业。实现这种之一纳入look to`sun.misc.Unsafe`类。这允许您直接像在C语言中分配内存。
+如果确实需要处理很大的数据集, 那就需要考虑你的解决方案了. 可以分成小块按批次加载数据, 或者放弃使用标准库提供的这些数据结构。比如使用 `sun.misc.Unsafe` 类。这个类允许您像在C语言一样直接分配内存。
 
 
 
