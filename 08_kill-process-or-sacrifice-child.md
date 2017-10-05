@@ -1,10 +1,10 @@
 # Out of memory: **Kill process or sacrifice child**
 
-# 内存不足:* *杀进程或牺牲孩子* *
+# OutOfMemoryError系列（8）: Kill process or sacrifice child
 
 In order to understand this error, we need to recoup the operating system basics. As you know, operating systems are built on the concept of processes. Those processes are shepherded by several kernel jobs, one of which, named “Out of memory killer” is of interest to us in this particular case.
 
-为了理解这个错误,我们需要收回操作系统基础知识。如你所知,操作系统是建立在流程的概念.这些过程是护送几个内核工作,其中一个名叫“内存不足杀手”感兴趣的我们在这种特定的情况下。
+为了理解这个错误,我们需要回顾一下操作系统基础知识。如你所知,操作系统(operating system)有一个概念叫做进程(process). 这些进程由几个系统内核任务(kernel jobs)进行守护,其中一个叫做 “Out of memory killer(内存不足杀手)”, 正对应本节所讲的 OutOfMemoryError。
 
 This kernel job can annihilate your processes under extremely low memory conditions. When such a condition is detected, the Out of memory killer is activated and picks a process to kill. The target is picked using a set of heuristics scoring all processes and selecting the one with the worst score to kill. The `Out of memory: Kill process or sacrifice child` is thus different from other errors covered in our [OOM handbook](http://plumbr.eu/outofmemoryerror) as it is not triggered nor proxied by the JVM but is a safety net built into the operating system kernels.
 
@@ -21,7 +21,7 @@ The `Out of memory: kill process or sacrifice child` error is generated when the
 
 ## What is causing it?
 
-## 是由什么原因导致的?
+## 原因分析
 
 By default, Linux kernels allow processes to request more memory than currently available in the system. This makes all the sense in the world, considering that most of the processes never actually use all of the memory they allocate. The easiest comparison to this approach would be the broadband operators. They sell all the consumers a 100Mbit download promise, far exceeding the actual bandwidth present in their network. The bet is again on the fact that the users will not simultaneously all use their allocated download limit. Thus one 10Gbit link can successfully serve way more than the 100 users our simple math would permit.
 
@@ -45,11 +45,11 @@ Overcommitting configuration allows to allocate more and more memory for this ro
 
 ## Give me an example
 
-## 给我一个例子
+## 示例
 
 When you compile and launch the following Java code snippet on Linux (I used the latest stable Ubuntu version):
 
-当你编译并启动下面的Java代码片段在Linux上(我使用Ubuntu的最新稳定版本):
+在Linux上(如最新稳定版的Ubuntu)编译并执行如下代码:
 
 ```
 package eu.plumbr.demo;
@@ -101,7 +101,7 @@ swapon swapfile
 
 ## What is the solution?
 
-## 解决方案是什么?
+## 解决方案
 
 There are several ways to handle such situation. The first and most straightforward way to overcome the issue is to migrate the system to an instance with more memory.
 
