@@ -2,7 +2,7 @@
 
 In order to understand this error, we need to recoup the operating system basics. As you know, operating systems are built on the concept of processes. Those processes are shepherded by several kernel jobs, one of which, named “Out of memory killer” is of interest to us in this particular case.
 
-This kernel job can annihilate your processes under extremely low memory conditions. When such a condition is detected, the Out of memory killer is activated and picks a process to kill. The target is picked using a set of heuristics scoring all processes and selecting the one with the worst score to kill. The _Out of memory: Kill process or sacrifice child_ is thus different from other errors covered in our [OOM handbook](http://plumbr.eu/outofmemoryerror) as it is not triggered nor proxied by the JVM but is a safety net built into the operating system kernels.
+This kernel job can annihilate your processes under extremely low memory conditions. When such a condition is detected, the Out of memory killer is activated and picks a process to kill. The target is picked using a set of heuristics scoring all processes and selecting the one with the worst score to kill. The `Out of memory: Kill process or sacrifice child` is thus different from other errors covered in our [OOM handbook](http://plumbr.eu/outofmemoryerror) as it is not triggered nor proxied by the JVM but is a safety net built into the operating system kernels.
 
 
 
@@ -10,7 +10,7 @@ This kernel job can annihilate your processes under extremely low memory conditi
 
 
 
-The _Out of memory: kill process or sacrifice child_ error is generated when the available virtual memory (including swap) is consumed to the extent where the overall operating system stability is put to risk. In such case the Out of memory killer picks the rogue process and kills it.
+The `Out of memory: kill process or sacrifice child` error is generated when the available virtual memory (including swap) is consumed to the extent where the overall operating system stability is put to risk. In such case the Out of memory killer picks the rogue process and kills it.
 
 ## What is causing it?
 
@@ -18,11 +18,11 @@ By default, Linux kernels allow processes to request more memory than currently 
 
 A side effect of such an approach is visible in case some of your programs are on the path of depleting the system’s memory. This can lead to extremely low memory conditions, where no pages can be allocated to process. You might have faced such situation, where not even a root account cannot kill the offending task. To prevent such situations, the killer activates, and identifies the rogue process to be the killed.
 
-You can read more about fine-tuning the behaviour of “_Out of memory killer_” in [this article from RedHat documentation](https://access.redhat.com/site/documentation/en-US/Red_Hat_Enterprise_Linux/6/html/Performance_Tuning_Guide/s-memory-captun.html).
+You can read more about fine-tuning the behaviour of “`Out of memory killer`” in [this article from RedHat documentation](https://access.redhat.com/site/documentation/en-US/Red_Hat_Enterprise_Linux/6/html/Performance_Tuning_Guide/s-memory-captun.html).
 
-Now that we have the context, how can you know what triggered the “killer” and woke you up at 5AM? One common trigger for the activation is hidden in the operating system configuration. When you check the configuration in _/proc/sys/vm/overcommit_memory_, you have the first hint – the value specified here indicates whether all malloc() calls are allowed to succeed. Note that the path to the parameter in the proc file system varies depending on the system affected by the change.
+Now that we have the context, how can you know what triggered the “killer” and woke you up at 5AM? One common trigger for the activation is hidden in the operating system configuration. When you check the configuration in `/proc/sys/vm/overcommit_memory`, you have the first hint – the value specified here indicates whether all malloc() calls are allowed to succeed. Note that the path to the parameter in the proc file system varies depending on the system affected by the change.
 
-Overcommitting configuration allows to allocate more and more memory for this rogue process which can eventually trigger the “_Out of memory killer_” to do exactly what it is meant to do.
+Overcommitting configuration allows to allocate more and more memory for this rogue process which can eventually trigger the “`Out of memory killer`” to do exactly what it is meant to do.
 
 ## Give me an example
 
@@ -46,14 +46,18 @@ public static void main(String[] args){
 }
 ```
 
-then you will face an error similar to the following in the system logs ( _/var/log/kern.log_ in our example):
+then you will face an error similar to the following in the system logs ( `/var/log/kern.log` in our example):
 
 ```
-Jun  4 07:41:59 plumbr kernel: [70667120.897649] Out of memory: Kill process 29957 (java) score 366 or sacrifice child
-Jun  4 07:41:59 plumbr kernel: [70667120.897701] Killed process 29957 (java) total-vm:2532680kB, anon-rss:1416508kB, file-rss:0kB
+Jun  4 07:41:59 plumbr kernel: 
+	[70667120.897649]
+	Out of memory: Kill process 29957 (java) score 366 or sacrifice child
+Jun  4 07:41:59 plumbr kernel: 
+	[70667120.897701]
+	Killed process 29957 (java) total-vm:2532680kB, anon-rss:1416508kB, file-rss:0kB
 ```
 
-Note that you might need to tweak the swapfile and heap sizes, in our testcase we used a 2g heap specified by _-Xmx2g_ and had the following swap configuration:
+Note that you might need to tweak the swapfile and heap sizes, in our testcase we used a 2g heap specified by `-Xmx2g` and had the following swap configuration:
 
 ```
 swapoff -a 
