@@ -25,23 +25,24 @@ The `Out of memory: kill process or sacrifice child` error is generated when the
 
 By default, Linux kernels allow processes to request more memory than currently available in the system. This makes all the sense in the world, considering that most of the processes never actually use all of the memory they allocate. The easiest comparison to this approach would be the broadband operators. They sell all the consumers a 100Mbit download promise, far exceeding the actual bandwidth present in their network. The bet is again on the fact that the users will not simultaneously all use their allocated download limit. Thus one 10Gbit link can successfully serve way more than the 100 users our simple math would permit.
 
-默认情况下,Linux内核允许进程请求内存比当前可用的系统.这个世界上所有的意义,考虑到大部分的过程从来没有真正使用所有的内存分配.这种方法是最简单的比较宽带运营商。他们卖100 mbit下载的所有消费者承诺,远远超过实际的带宽呈现在他们的网络.赌局的这一事实再次分配的用户将不同时使用他们的下载限制.因此一个10 gbit链接可以成功地服务于超过100个用户我们的简单数学将允许。
+默认情况下, Linux内核允许进程请求的内存超过当前系统的可用内存. 这是因为在实际场景中, 大多数进程所使用的内存, 并没有他们所申请的那么多. 
+一个简单的类比是宽带租赁。运营商卖出 100Mb 带宽给你, 这只占运营商出口总带宽的一小部分. 但事实上, 宽带用户不可能同时用到这么大的量. 因此有 10Gbit 的带宽,就可以卖给超过100个用户100Mbps 的带宽。
 
 A side effect of such an approach is visible in case some of your programs are on the path of depleting the system’s memory. This can lead to extremely low memory conditions, where no pages can be allocated to process. You might have faced such situation, where not even a root account cannot kill the offending task. To prevent such situations, the killer activates, and identifies the rogue process to be the killed.
 
-这种方法的一个副作用是可见的,以防你的一些项目的道路上消耗系统的内存.这可能导致极低内存条件,没有页面可以分配给进程。你可能会面临这样的情况,甚至连根帐户不能杀死冒犯任务.为了防止这种情况,凶手激活,标识流氓死亡的过程。
+可以预见, 这种方式有一个副作用, 如果某些程序消耗了大量的系统内存, 就会导致可用内存量极低, 没有内存页面(pages)可以分配给进程。这时候可能会出现一种极端情况, root 用户也没办法 kill 掉这个流氓程序. 为了阻止这种情况, killer会自动激活, 找到流氓进程并将其杀死。
 
 You can read more about fine-tuning the behaviour of “`Out of memory killer`” in [this article from RedHat documentation](https://access.redhat.com/site/documentation/en-US/Red_Hat_Enterprise_Linux/6/html/Performance_Tuning_Guide/s-memory-captun.html).
 
-你可以阅读更多关于微调的行为”`Out of memory killer`“在(本文从RedHat文档)(https://access.redhat.com/site/documentation/en-US/Red_Hat_Enterprise_Linux/6/html/Performance_Tuning_Guide/s-memory-captun.html)。
+关于 ”`Out of memory killer`“ 性能调优的更多细节, 请参考: [this article from RedHat documentation](https://access.redhat.com/site/documentation/en-US/Red_Hat_Enterprise_Linux/6/html/Performance_Tuning_Guide/s-memory-captun.html).
 
 Now that we have the context, how can you know what triggered the “killer” and woke you up at 5AM? One common trigger for the activation is hidden in the operating system configuration. When you check the configuration in `/proc/sys/vm/overcommit_memory`, you have the first hint – the value specified here indicates whether all malloc() calls are allowed to succeed. Note that the path to the parameter in the proc file system varies depending on the system affected by the change.
 
-现在我们有了上下文,你怎么能知道什么引发了“杀手”,在早晨5点叫醒你吗?一个常见的触发激活是隐藏在操作系统配置.当你检查中的配置`/proc/sys/vm/overcommit_memory`,你有第一个暗示——指定的值指示是否允许所有malloc()调用成功.注意,路径参数proc文件系统在系统变化的影响而异。
+现在我们知道了 “killer” 是怎么回事, 那么你知道是什么在早上5点钟触发了“killer”吗? 一个常见的触发器隐藏在操作系统配置文件中. 打开 `/proc/sys/vm/overcommit_memory` 文件, 其中的值指定了是否允许所有malloc()调用成功. 注意, proc文件的路径各个操作系统不太一样。
 
 Overcommitting configuration allows to allocate more and more memory for this rogue process which can eventually trigger the “`Out of memory killer`” to do exactly what it is meant to do.
 
-简述配置允许分配更多的内存这个流氓的过程最终可以触发”`Out of memory killer`“它到底是什么要做。
+超量申请(Overcommitting)配置允许流氓进程分配更多的内存, 最终可能触发”`Out of memory killer`“。
 
 ## Give me an example
 
@@ -105,15 +106,15 @@ swapon swapfile
 
 There are several ways to handle such situation. The first and most straightforward way to overcome the issue is to migrate the system to an instance with more memory.
 
-有几种方法来处理这种情况。第一个也是最直接的方法来克服这个问题是系统迁移到一个实例和更多的内存。
+处理这种情况有许多方法。第一种,也是最直接的方法，就是将系统迁移到一个内存更大的实例。
 
 Other possibilities would involve [fine-tuning the OOM killer](https://access.redhat.com/site/documentation/en-US/Red_Hat_Enterprise_Linux/6/html/Performance_Tuning_Guide/s-memory-captun.html), scaling the load horizontally across several small instances or reducing the memory requirements of the application.
 
-其他可能需要微调伯父杀手(https://access.redhat.com/site/documentation/en-US/Red_Hat_Enterprise_Linux/6/html/Performance_Tuning_Guide/s-memory-captun.html),扩展负载水平跨几个小实例或减少应用程序的内存需求。
+另外,还可以执行 [fine-tuning the OOM killer](https://access.redhat.com/site/documentation/en-US/Red_Hat_Enterprise_Linux/6/html/Performance_Tuning_Guide/s-memory-captun.html), 将应用程序做负载均衡(水平扩展,集群),或者减小应用程序的内存需求。
 
 One solution which we are not keen to recommend involves increasing swap space. When you recall that Java is a garbage collected language, then this solution already seems less lucrative. Modern GC algorithms are efficient when running in physical memory, but when dealing with swapped allocations the efficiency is hammered. Swapping can increase the length of GC pauses in several orders of magnitude, so you should think twice before jumping to this solution.
 
-一个解决方案,我们并不急于推荐包括增加交换空间。当你回想一下,Java是一种垃圾收集语言,然后这个解决方案似乎已不赚钱的.现代GC算法运行在物理内存时是有效的,但在处理交换配置效率是重创.交换可以增加GC暂停的长度在几个数量级,因此这个解决方案之前,你应该三思而行。
+有一种不太推荐的解决方案是增加交换空间。回想一下,Java是一种包含自动垃圾收集的语言,所以增加交换内存并不合算. 现代的GC算法在处理物理内存时是非常高效的, 但在处理交换空间时效率就是硬伤了. 交换内存可能导致GC暂停的时间增长多个数量级, 因此在考虑这个方案之前,请三思而后行。
 
 
 
