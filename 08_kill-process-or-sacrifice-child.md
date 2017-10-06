@@ -8,7 +8,7 @@ In order to understand this error, we need to recoup the operating system basics
 
 This kernel job can annihilate your processes under extremely low memory conditions. When such a condition is detected, the Out of memory killer is activated and picks a process to kill. The target is picked using a set of heuristics scoring all processes and selecting the one with the worst score to kill. The `Out of memory: Kill process or sacrifice child` is thus different from other errors covered in our [OOM handbook](http://plumbr.eu/outofmemoryerror) as it is not triggered nor proxied by the JVM but is a safety net built into the operating system kernels.
 
-这个内核工作在极低内存条件下可以消灭你的过程。当这样的条件被检测到,记忆的杀手被激活和选择过程.目标是选择使用一组启发式得分最差的所有过程和选择一个分数。的`Out of memory: Kill process or sacrifice child`因此不同于其他错误覆盖在我们的[伯父手册](http://plumbr.欧盟/ outofmemoryerror)JVM不触发代理也不但是一个安全网构建到操作系统内核。
+这个kernel job在内存极低的情况下可以杀死你的过程。只要满足其执行条件, `Out of memory killer` 就会被激活, 选中一个进程来杀死. 其通过启发式算法,计算所有进程的得分(heuristics scoring), 得分最低的进程将被杀死。因此 `Out of memory: Kill process or sacrifice child` 和其他的 [OOM handbook](http://plumbr.eu/outofmemoryerror) 不同, 因为既不由JVM触发,也不由JVM代理, 而是内置于系统内核的一种安全措施。
 
 
 ![out of memory linux kernel](./08_01_out-of-memory-kill-process-or-sacrifice-child.png)
@@ -17,7 +17,7 @@ This kernel job can annihilate your processes under extremely low memory conditi
 
 The `Out of memory: kill process or sacrifice child` error is generated when the available virtual memory (including swap) is consumed to the extent where the overall operating system stability is put to risk. In such case the Out of memory killer picks the rogue process and kills it.
 
-的`Out of memory: kill process or sacrifice child`错误时生成可用虚拟内存(包括交换)消耗的程度整体操作系统稳定风险.在这种情况下,内存不足杀手挑选流氓过程并杀死它。
+如果内存(包括swap)不足, 有可能会影响系统稳定, 这时候 `Out of memory killer` 就会想办法找出流氓进程, 并杀死他, 这就会引起 `Out of memory: kill process or sacrifice child` 错误。
 
 ## What is causing it?
 
@@ -73,7 +73,7 @@ public static void main(String[] args){
 
 then you will face an error similar to the following in the system logs ( `/var/log/kern.log` in our example):
 
-然后你将面临一个错误类似于系统日志(以下`/var/log/kern.log`在我们的示例中):
+然后在系统日志中(如 `/var/log/kern.log` 文件)会看到一个错误, 类似下面这样:
 
 ```
 Jun  4 07:41:59 plumbr kernel: 
@@ -88,7 +88,7 @@ Jun  4 07:41:59 plumbr kernel:
 
 Note that you might need to tweak the swapfile and heap sizes, in our testcase we used a 2g heap specified by `-Xmx2g` and had the following swap configuration:
 
-请注意,您可能需要调整swapfile和堆大小,在我们的testcase我们使用2 g堆规定`-Xmx2g`和交换有以下配置:
+> **提示**: 你可能需要调整 swap 的大小以及堆内存大小, 例如我们使用的堆内存配置为 `-Xmx2g`,  swap 配置如下:
 
 ```
 swapoff -a 
