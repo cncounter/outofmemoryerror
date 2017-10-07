@@ -95,7 +95,7 @@ java.lang.OutOfMemoryError: Requested array size exceeds VM limit
 
 Note that before facing `java.lang.OutOfMemoryError: Requested array size exceeds VM limit` on the last two attempts, the allocations failed with a lot more familiar `java.lang.OutOfMemoryError: Java heap space` message. It happens because the 2^31-1 int primitives you are trying to make room for require 8G of memory which is less than the defaults used by the JVM.
 
-请注意, 在后两次迭代中, 抛出 `java.lang.OutOfMemoryError: Requested array size exceeds VM limit` 错误之前, 会先抛出了另一个 `java.lang.OutOfMemoryError: Java heap space` 错误。 这是因为 `2^31-1` 个 int 数占用的内存超过了JVM默认的8GB。
+请注意, 在后两次迭代抛出 `java.lang.OutOfMemoryError: Requested array size exceeds VM limit` 错误之前, 先抛出了2次 `java.lang.OutOfMemoryError: Java heap space` 错误。 这是因为 `2^31-1` 个 int 数占用的内存超过了JVM默认的8GB堆内存。
 
 This example also demonstrates why the error is so rare – in order to see the VM limit on array size being hit, you need to allocate an array with the size right in between the platform limit and Integer.MAX_INT. When our example is run on 64bit Mac OS X with Hotspot 7, there are only two such array lengths: Integer.MAX_INT-1 and Integer.MAX_INT.
 
