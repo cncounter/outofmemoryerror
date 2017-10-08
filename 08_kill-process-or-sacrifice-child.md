@@ -4,6 +4,20 @@
 
 > 一言不合就杀进程。。。
 
+
+
+这是本系列的第八篇文章, 相关文章列表:
+
+- [OutOfMemoryError系列（1）: Java heap space](http://blog.csdn.net/renfufei/article/details/76350794)
+- [OutOfMemoryError系列（2）: GC overhead limit exceeded](http://blog.csdn.net/renfufei/article/details/77585294)
+- [OutOfMemoryError系列（3）: Permgen space](http://blog.csdn.net/renfufei/article/details/77994177)
+- [OutOfMemoryError系列（4）: Metaspace](http://blog.csdn.net/renfufei/article/details/78061354)
+- [OutOfMemoryError系列（5）: Unable to create new native thread](http://blog.csdn.net/renfufei/article/details/78088553)
+- [OutOfMemoryError系列（6）: Out of swap space？](http://blog.csdn.net/renfufei/article/details/78136638)
+- [OutOfMemoryError系列（7）: Requested array size exceeds VM limit](http://blog.csdn.net/renfufei/article/details/78170188)
+
+
+
 In order to understand this error, we need to recoup the operating system basics. As you know, operating systems are built on the concept of processes. Those processes are shepherded by several kernel jobs, one of which, named “Out of memory killer” is of interest to us in this particular case.
 
 为了理解这个错误,我们先回顾一下操作系统相关的基础知识。
@@ -123,7 +137,7 @@ One solution which we are not keen to recommend involves increasing swap space. 
 
 
 
-原文链接: <https://plumbr.eu/outofmemoryerror/unable-to-create-new-native-thread>
+原文链接: <https://plumbr.eu/outofmemoryerror/kill-process-or-sacrifice-child>
 
 翻译日期: 2017年9月21日
 
