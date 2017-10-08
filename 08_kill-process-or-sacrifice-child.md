@@ -106,15 +106,15 @@ swapon swapfile
 
 There are several ways to handle such situation. The first and most straightforward way to overcome the issue is to migrate the system to an instance with more memory.
 
-处理这种情况有许多方法。第一种,也是最直接的方法，就是将系统迁移到一个内存更大的实例。
+有多种处理办法。最简单的办法就是将系统迁移到内存更大的实例中。
 
 Other possibilities would involve [fine-tuning the OOM killer](https://access.redhat.com/site/documentation/en-US/Red_Hat_Enterprise_Linux/6/html/Performance_Tuning_Guide/s-memory-captun.html), scaling the load horizontally across several small instances or reducing the memory requirements of the application.
 
-另外,还可以执行 [fine-tuning the OOM killer](https://access.redhat.com/site/documentation/en-US/Red_Hat_Enterprise_Linux/6/html/Performance_Tuning_Guide/s-memory-captun.html), 将应用程序做负载均衡(水平扩展,集群),或者减小应用程序的内存需求。
+另外, 还可以通过 [OOM killer 调优](https://access.redhat.com/site/documentation/en-US/Red_Hat_Enterprise_Linux/6/html/Performance_Tuning_Guide/s-memory-captun.html), 或者做负载均衡(水平扩展,集群), 或者降低应用对内存的需求。
 
 One solution which we are not keen to recommend involves increasing swap space. When you recall that Java is a garbage collected language, then this solution already seems less lucrative. Modern GC algorithms are efficient when running in physical memory, but when dealing with swapped allocations the efficiency is hammered. Swapping can increase the length of GC pauses in several orders of magnitude, so you should think twice before jumping to this solution.
 
-有一种不太推荐的解决方案是增加交换空间。回想一下,Java是一种包含自动垃圾收集的语言,所以增加交换内存并不合算. 现代的GC算法在处理物理内存时是非常高效的, 但在处理交换空间时效率就是硬伤了. 交换内存可能导致GC暂停的时间增长多个数量级, 因此在考虑这个方案之前,请三思而后行。
+不太推荐的方案是加大交换空间/虚拟内存(swap space)。 试想一下, Java 包含了自动垃圾回收机制, 增加交换内存的代价会很高昂. 现代GC算法在处理物理内存时性能飞快, 但对交换内存来说,其效率就是硬伤了. 交换内存可能导致GC暂停的时间增长几个数量级, 因此在采用这个方案之前, 看看是否真的有这个必要。
 
 
 
