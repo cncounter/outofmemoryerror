@@ -4,11 +4,11 @@
 
 In order to understand this error, we need to recoup the operating system basics. As you know, operating systems are built on the concept of processes. Those processes are shepherded by several kernel jobs, one of which, named “Out of memory killer” is of interest to us in this particular case.
 
-为了理解这个错误,我们需要回顾一下操作系统基础知识。如你所知,操作系统(operating system)有一个概念叫做进程(process). 这些进程由几个系统内核任务(kernel jobs)进行守护,其中一个叫做 “Out of memory killer(内存不足杀手)”, 正对应本节所讲的 OutOfMemoryError。
+为了更好理解这个错误,我们先回顾一些操作系统的基础知识。我们知道, 操作系统(operating system)构建在进程(process)概念之上. 进程由系统内核作业(kernel jobs)进行调度和守护, 其中有一个核心作业叫做 “Out of memory killer(内存溢出杀手)”, 和本节所讲的 OutOfMemoryError 有关联。
 
 This kernel job can annihilate your processes under extremely low memory conditions. When such a condition is detected, the Out of memory killer is activated and picks a process to kill. The target is picked using a set of heuristics scoring all processes and selecting the one with the worst score to kill. The `Out of memory: Kill process or sacrifice child` is thus different from other errors covered in our [OOM handbook](http://plumbr.eu/outofmemoryerror) as it is not triggered nor proxied by the JVM but is a safety net built into the operating system kernels.
 
-这个kernel job在内存极低的情况下可以杀死你的过程。只要满足其执行条件, `Out of memory killer` 就会被激活, 选中一个进程来杀死. 其通过启发式算法,计算所有进程的得分(heuristics scoring), 得分最低的进程将被杀死。因此 `Out of memory: Kill process or sacrifice child` 和其他的 [OOM handbook](http://plumbr.eu/outofmemoryerror) 不同, 因为既不由JVM触发,也不由JVM代理, 而是内置于系统内核的一种安全措施。
+内存溢出杀手在内存极低的情况下可以杀死你的过程。只要满足其执行条件, `Out of memory killer` 就会被激活, 选中一个进程来杀死. 其通过启发式算法,计算所有进程的得分(heuristics scoring), 得分最低的进程将被杀死。因此 `Out of memory: Kill process or sacrifice child` 和其他的 [OOM handbook](http://plumbr.eu/outofmemoryerror) 不同, 因为既不由JVM触发,也不由JVM代理, 而是内置于系统内核的一种安全措施。
 
 
 ![out of memory linux kernel](./08_01_out-of-memory-kill-process-or-sacrifice-child.png)
