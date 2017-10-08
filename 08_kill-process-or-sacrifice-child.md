@@ -2,13 +2,17 @@
 
 # OutOfMemoryError系列（8）: Kill process or sacrifice child
 
+> 一言不合就杀进程。。。
+
 In order to understand this error, we need to recoup the operating system basics. As you know, operating systems are built on the concept of processes. Those processes are shepherded by several kernel jobs, one of which, named “Out of memory killer” is of interest to us in this particular case.
 
-为了更好理解这个错误,我们先回顾一些操作系统的基础知识。我们知道, 操作系统(operating system)构建在进程(process)概念之上. 进程由系统内核作业(kernel jobs)进行调度和守护, 其中有一个核心作业叫做 “Out of memory killer(内存溢出杀手)”, 和本节所讲的 OutOfMemoryError 有关联。
+为了理解这个错误,我们先回顾一下操作系统相关的基础知识。
+
+我们知道, 操作系统(operating system)构建在进程(process)的基础上. 进程由内核作业(kernel jobs)进行调度和维护, 其中有一个内核作业称为 “Out of memory killer(OOM终结者)”, 与本节所讲的 OutOfMemoryError 有关。
 
 This kernel job can annihilate your processes under extremely low memory conditions. When such a condition is detected, the Out of memory killer is activated and picks a process to kill. The target is picked using a set of heuristics scoring all processes and selecting the one with the worst score to kill. The `Out of memory: Kill process or sacrifice child` is thus different from other errors covered in our [OOM handbook](http://plumbr.eu/outofmemoryerror) as it is not triggered nor proxied by the JVM but is a safety net built into the operating system kernels.
 
-内存溢出杀手在内存极低的情况下可以杀死你的过程。只要满足其执行条件, `Out of memory killer` 就会被激活, 选中一个进程来杀死. 其通过启发式算法,计算所有进程的得分(heuristics scoring), 得分最低的进程将被杀死。因此 `Out of memory: Kill process or sacrifice child` 和其他的 [OOM handbook](http://plumbr.eu/outofmemoryerror) 不同, 因为既不由JVM触发,也不由JVM代理, 而是内置于系统内核的一种安全措施。
+`Out of memory killer` 在可用内存极低的情况下会杀死某些进程。只要达到触发条件就会激活, 选中某个进程并杀掉。 通常采用启发式算法, 对所有进程计算评分(heuristics scoring), 得分最低的进程将被 kill 掉。因此 `Out of memory: Kill process or sacrifice child` 和前面所讲的 [OutOfMemoryError](http://blog.csdn.net/renfufei/article/category/5884735) 都不同, 因为它既不由JVM触发,也不由JVM代理, 而是系统内核内置的一种安全保护措施。
 
 
 ![out of memory linux kernel](./08_01_out-of-memory-kill-process-or-sacrifice-child.png)
@@ -17,7 +21,7 @@ This kernel job can annihilate your processes under extremely low memory conditi
 
 The `Out of memory: kill process or sacrifice child` error is generated when the available virtual memory (including swap) is consumed to the extent where the overall operating system stability is put to risk. In such case the Out of memory killer picks the rogue process and kills it.
 
-如果内存(包括swap)不足, 有可能会影响系统稳定, 这时候 `Out of memory killer` 就会想办法找出流氓进程, 并杀死他, 这就会引起 `Out of memory: kill process or sacrifice child` 错误。
+如果可用内存(含swap)不足, 就有可能会影响系统稳定, 这时候 `Out of memory killer` 就会设法找出流氓进程并杀死他, 也就是引起 `Out of memory: kill process or sacrifice child` 错误。
 
 ## What is causing it?
 
@@ -25,24 +29,24 @@ The `Out of memory: kill process or sacrifice child` error is generated when the
 
 By default, Linux kernels allow processes to request more memory than currently available in the system. This makes all the sense in the world, considering that most of the processes never actually use all of the memory they allocate. The easiest comparison to this approach would be the broadband operators. They sell all the consumers a 100Mbit download promise, far exceeding the actual bandwidth present in their network. The bet is again on the fact that the users will not simultaneously all use their allocated download limit. Thus one 10Gbit link can successfully serve way more than the 100 users our simple math would permit.
 
-默认情况下, Linux内核允许进程请求的内存超过当前系统的可用内存. 这是因为在实际场景中, 大多数进程所使用的内存, 并没有他们所申请的那么多. 
-一个简单的类比是宽带租赁。运营商卖出 100Mb 带宽给你, 这只占运营商出口总带宽的一小部分. 但事实上, 宽带用户不可能同时用到这么大的量. 因此有 10Gbit 的带宽,就可以卖给超过100个用户100Mbps 的带宽。
+默认情况下, Linux kernels(内核)允许进程申请的量超过系统可用内存. 这是因为,在大多数情况下, 很多进程申请了很多内存, 但实际使用的量并没有那么多. 
+有个简单的类比, 宽带租赁的服务商, 可能他的总带宽只有 10Gbps, 但却卖出远远超过100份以上的 100Mbps 带宽, 原因是多数时候, 宽带用户之间是错峰的, 而且不可能每个用户都用满服务商所承诺的带宽。
 
 A side effect of such an approach is visible in case some of your programs are on the path of depleting the system’s memory. This can lead to extremely low memory conditions, where no pages can be allocated to process. You might have faced such situation, where not even a root account cannot kill the offending task. To prevent such situations, the killer activates, and identifies the rogue process to be the killed.
 
-可以预见, 这种方式有一个副作用, 如果某些程序消耗了大量的系统内存, 就会导致可用内存量极低, 没有内存页面(pages)可以分配给进程。这时候可能会出现一种极端情况, root 用户也没办法 kill 掉这个流氓程序. 为了阻止这种情况, killer会自动激活, 找到流氓进程并将其杀死。
+这样的话,可能会有一个问题, 假若某些程序占用了大量的系统内存, 那么可用内存量就会极小, 导致没有内存页面(pages)可以分配给需要的进程。可能这时候会出现极端情况, 就是 root 用户也不能通过 kill 来杀掉流氓进程. 为了防止发生这种情况, 系统会自动激活 killer, 查找流氓进程并将其杀死。
 
 You can read more about fine-tuning the behaviour of “`Out of memory killer`” in [this article from RedHat documentation](https://access.redhat.com/site/documentation/en-US/Red_Hat_Enterprise_Linux/6/html/Performance_Tuning_Guide/s-memory-captun.html).
 
-关于 ”`Out of memory killer`“ 性能调优的更多细节, 请参考: [this article from RedHat documentation](https://access.redhat.com/site/documentation/en-US/Red_Hat_Enterprise_Linux/6/html/Performance_Tuning_Guide/s-memory-captun.html).
+更多关于 ”`Out of memory killer`“ 的性能调优细节, 请参考: [RedHat 官方文档](https://access.redhat.com/site/documentation/en-US/Red_Hat_Enterprise_Linux/6/html/Performance_Tuning_Guide/s-memory-captun.html).
 
 Now that we have the context, how can you know what triggered the “killer” and woke you up at 5AM? One common trigger for the activation is hidden in the operating system configuration. When you check the configuration in `/proc/sys/vm/overcommit_memory`, you have the first hint – the value specified here indicates whether all malloc() calls are allowed to succeed. Note that the path to the parameter in the proc file system varies depending on the system affected by the change.
 
-现在我们知道了 “killer” 是怎么回事, 那么你知道是什么在早上5点钟触发了“killer”吗? 一个常见的触发器隐藏在操作系统配置文件中. 打开 `/proc/sys/vm/overcommit_memory` 文件, 其中的值指定了是否允许所有malloc()调用成功. 注意, proc文件的路径各个操作系统不太一样。
+现在我们知道了为什么会发生这种问题, 那为什么是半夜5点钟触发 “killer” 发报警信息给你呢? 通常触发的原因在于操作系统配置. 例如, `/proc/sys/vm/overcommit_memory` 配置文件的值, 指定了是否允许所有的 `malloc()` 调用成功. 请注意, 在各操作系统中, 这个配置对应的 proc 文件路径可能不同。
 
 Overcommitting configuration allows to allocate more and more memory for this rogue process which can eventually trigger the “`Out of memory killer`” to do exactly what it is meant to do.
 
-超量申请(Overcommitting)配置允许流氓进程分配更多的内存, 最终可能触发”`Out of memory killer`“。
+过量使用(overcommitting)配置, 允许流氓进程申请越来越多的内存, 最终惹得 ”`Out of memory killer`“ 出来搞事情。
 
 ## Give me an example
 
