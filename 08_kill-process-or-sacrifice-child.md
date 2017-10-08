@@ -50,7 +50,7 @@ Overcommitting configuration allows to allocate more and more memory for this ro
 
 When you compile and launch the following Java code snippet on Linux (I used the latest stable Ubuntu version):
 
-在Linux上(如最新稳定版的Ubuntu)编译并执行如下代码:
+在Linux上(如最新稳定版的Ubuntu)编译并执行以下的示例代码:
 
 ```
 package eu.plumbr.demo;
@@ -74,7 +74,7 @@ public static void main(String[] args){
 
 then you will face an error similar to the following in the system logs ( `/var/log/kern.log` in our example):
 
-然后在系统日志中(如 `/var/log/kern.log` 文件)会看到一个错误, 类似下面这样:
+将会在系统日志中(如 `/var/log/kern.log` 文件)看到一个错误, 类似这样:
 
 ```
 Jun  4 07:41:59 plumbr kernel: 
@@ -89,7 +89,7 @@ Jun  4 07:41:59 plumbr kernel:
 
 Note that you might need to tweak the swapfile and heap sizes, in our testcase we used a 2g heap specified by `-Xmx2g` and had the following swap configuration:
 
-> **提示**: 你可能需要调整 swap 的大小以及堆内存大小, 例如我们使用的堆内存配置为 `-Xmx2g`,  swap 配置如下:
+> **提示**: 可能需要调整 swap 的大小并设置最大堆内存, 例如堆内存配置为 `-Xmx2g`,  swap 配置如下:
 
 ```
 swapoff -a 
