@@ -1115,7 +1115,7 @@ swapon swapfile
 
 - [HelloJava公众号的文章-java.lang.OutOfMemoryError:Map failed](http://mp.weixin.qq.com/s?__biz=MjM5MzYzMzkyMQ==&mid=200069481&idx=1&sn=52e17d327c7ea5033665459f194c7b1b&scene=4)
 
-- [HelloJava公众号的文章-java.lang.OutOfMemoryError:Direct Buffer Memory](http://hellojava.info/?tag=direct-buffer-memory)
+- [hellojavacases公众号的文章-java.lang.OutOfMemoryError:Direct Buffer Memory](http://hellojava.info/?tag=direct-buffer-memory)
 
 
 - [Oracle官方文档- Understand the OutOfMemoryError Exception](https://docs.oracle.com/javase/8/docs/technotes/guides/troubleshoot/memleaks002.html)
