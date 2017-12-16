@@ -1,4 +1,5 @@
 # java.lang.OutOfMemoryError 实例详解 
+
 ### The 8 symptoms that surface them 
 ### 内存溢出的8种主要类型
 
@@ -15,14 +16,14 @@ The many thousands of java.lang.OutOfMemoryErrors that I’ve met during my care
 
 
 
-1. [java.lang.OutOfMemoryError:**Java heap space**](01_java-heap-space.md)
-2. [java.lang.OutOfMemoryError:**GC overhead limit exceeded**](02_gc-overhead-limit-exceeded.md)
-3. [java.lang.OutOfMemoryError:**Permgen space**](03_permgen-space.md)
-4. [java.lang.OutOfMemoryError:**Metaspace**](04_metaspace.md)
-5. [java.lang.OutOfMemoryError:**Unable to create new native thread**](05_unable-to-create-new-native-thread.md)
-6. [java.lang.OutOfMemoryError:**Out of swap space?** ](06_out-of-swap-space.md)
-7. [java.lang.OutOfMemoryError:**Requested array size exceeds VM limit** Details](07_requested-array-size-exceeds-vm-limit.md)
-8. [Out of memory:**Kill process or sacrifice child**](08_kill-process-or-sacrifice-child.md)
+1. [OutOfMemoryError系列（1）: **Java heap space**](01_java-heap-space.md)
+2. [OutOfMemoryError系列（2）: **GC overhead limit exceeded**](02_gc-overhead-limit-exceeded.md)
+3. [OutOfMemoryError系列（3）: **Permgen space**](03_permgen-space.md)
+4. [OutOfMemoryError系列（4）: **Metaspace**](04_metaspace.md)
+5. [OutOfMemoryError系列（5）: **Unable to create new native thread**](05_unable-to-create-new-native-thread.md)
+6. [OutOfMemoryError系列（6）: **Out of swap space?** ](06_out-of-swap-space.md)
+7. [OutOfMemoryError系列（7）: **Requested array size exceeds VM limit** Details](07_requested-array-size-exceeds-vm-limit.md)
+8. [OutOfMemoryError系列（8）: **Kill process or sacrifice child**](08_kill-process-or-sacrifice-child.md)
 
 
 
